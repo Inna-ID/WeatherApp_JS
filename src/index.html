@@ -1,13 +1,26 @@
 @@include('html_parts/header.html')
 
-<h1>Home page</h1>
+<div class="titte-block">
+    <h1>Weather Finder</h1>
+    <p>Find out tempereture, conditions and more</p>
+</div>
 
-<ul>
-    <li>1</li>
-    <li>2</li>
-    <li>3</li>
-    <li>4</li>
-    <li>5</li>
-</ul>      
+<div class="search-block">
+    <form id="current-weather_form" action="">
+        <input id="city-name" type="text" placeholder="City">
+        <button type=submit></button>
+    </form>
+</div>
+
+<div class="data-block">
+    <p class="location"></p>
+    <p class="temperature"><span class="degrees-types">°C</span> </p>
+    <p><span class="key">Humidity: </span>%</p>
+    <p><span class="key">Cloudiness: </span></p>
+    <p><span class="key">Wind speed: </span> m/s</p>
+    <p><span class="key">Wind direction: </span></p>
+    <p><span class="key">Sunrise: </span></p>
+    <p><span class="key">Sunset: </span></p>
+</div>
 
 @@include('html_parts/footer.html')

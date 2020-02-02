@@ -14,9 +14,9 @@ function html() {
     .pipe(include({
       prefix: '@@'
     }))
-    .pipe(htmlmin({
-      collapseWhitespace: true
-    }))
+    // .pipe(htmlmin({
+    //   collapseWhitespace: true
+    // }))
     .pipe(dest('dist'))
 }
 
@@ -38,7 +38,7 @@ function styleLibs() {
 
 function scripts() {
 	return src('src/js/*.js')
-	.pipe(uglify())
+	// .pipe(uglify())
 	.pipe(dest('dist/js'))
 }
 
@@ -72,6 +72,8 @@ function serve() {
   watch('src/**.html', series(html)).on('change', sync.reload)
   watch('src/scss/**.scss', series(scss)).on('change', sync.reload)
   watch('src/js/*.js', series(scripts)).on('change', sync.reload)
+  watch('src/js/*.*', series(images)).on('change', sync.reload)
+  watch('src/js/*.*', series(fonts)).on('change', sync.reload)
 }
 
 exports.build = series(clear, scss, html, scripts, styleLibs, scriptsLibs, images, fonts)

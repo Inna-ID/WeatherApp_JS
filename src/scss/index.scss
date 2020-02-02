@@ -1,5 +1,23 @@
-$red: yellow;
+$titleColor: #333;
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
 h1 {
-    color: $red;
+    color: $titleColor;
+}
+
+input {
+    outline: none;
+}
+
+.search-block {
+    input {
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        padding: 5px 10px;
+    }
 }
