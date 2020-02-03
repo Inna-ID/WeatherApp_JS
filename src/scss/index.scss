@@ -19,5 +19,12 @@ input {
         border: 1px solid #ccc;
         border-radius: 3px;
         padding: 5px 10px;
+    } 
+}
+
+.data-block {
+    display: none;
+    &.visible {
+        display: block;
     }
 }
