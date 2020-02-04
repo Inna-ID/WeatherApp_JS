@@ -69,7 +69,7 @@ function serve() {
 		notify: false
 	})
 
-  watch('src/**.html', series(html)).on('change', sync.reload)
+  watch('src/**/*.html', series(html)).on('change', sync.reload)
   watch('src/scss/**.scss', series(scss)).on('change', sync.reload)
   watch('src/js/*.js', series(scripts)).on('change', sync.reload)
   watch('src/js/*.*', series(images)).on('change', sync.reload)

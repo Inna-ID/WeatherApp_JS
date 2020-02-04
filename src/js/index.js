@@ -1,5 +1,7 @@
 const APIKEY = 'e1df1fc3a72e0ced10d2e8bac9563a73';
+const MAP_API_URL = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyBu_KZxeeOWKC1tnynobv1-ef7TD-qCNiM&libraries=places'; 
 const FORM_CURRENT_WEATHER = document.getElementById('current-weather_form');
+const SEARCH_INPUT = document.querySelector('#city-name');
 let city = null;
 
 //dom elems
@@ -32,13 +34,34 @@ function setWidDerection(deg) {
     }
 }
 
+function autoComplete() {
+    // setTimeout( () => {
+    //     new google.maps.places.Autocomplete(SEARCH_INPUT);
+    // }, 1000)
+    fetch("https://wft-geo-db.p.rapidapi.com/v1/locale/locales", {
+        "method": "GET",
+        // "headers": {
+        //     "x-rapidapi-host": "wft-geo-db.p.rapidapi.com",
+        //     "x-rapidapi-key": "SIGN-UP-FOR-KEY"
+        // }
+    })
+    .then(response => {
+        console.log(response);
+    })
+    .catch(err => {
+        console.log(err);
+    });
+}
+
+SEARCH_INPUT.addEventListener('keyup', autoComplete);
+
 function loadData(city) {
     $.ajax(`http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${APIKEY}&units=metric`,
     { 
-        type:'GET', 
-        dataType:'json', 
-        success: dataLoaded, 
-        error: errorHandler 
+        type:'GET',
+        dataType:'json',
+        success: dataLoaded,
+        error: errorHandler
     }
 )}
 
@@ -78,3 +101,14 @@ FORM_CURRENT_WEATHER.addEventListener('submit', function(e) {
     e.preventDefault();
     getCity();
 });
+
+
+function loadForecast(city) {
+    $.ajax(`http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${APIKEY}&units=metric`,
+    { 
+        type:'GET',
+        dataType:'json',
+        success: dataLoaded,
+        error: errorHandler
+    }
+)}
