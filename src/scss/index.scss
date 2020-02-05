@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Nunito+Sans&display=swap');
+
 $titleColor: #333;
 
 * {
@@ -6,25 +8,154 @@ $titleColor: #333;
     box-sizing: border-box;
 }
 
-h1 {
-    color: $titleColor;
+html, body {
+    width: 100%;
+    height: 100%;
+}
+body {
+    font-family: 'Nunito Sans', sans-serif;
+    color: #fff;
 }
 
 input {
     outline: none;
 }
 
-.search-block {
-    input {
-        border: 1px solid #ccc;
-        border-radius: 3px;
-        padding: 5px 10px;
-    } 
+.wrapper {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to top, #283E51, #0A2342);
 }
 
+.main-content {
+    width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.titte-block {
+    margin-bottom: 5%;
+}
+.title {
+    
+}
+.description {
+    
+}
+
+
+.search {
+    background-color: transparent;
+    border: 0;
+    border-bottom: solid 1px #94afcc;
+    width: 40%;
+    padding-bottom: 4px;
+    color: #fff;
+    font-weight: lighter;
+    letter-spacing: 2px;
+    margin-right: 20px;
+    font-size: 1.25em;
+}
+
+::placeholder {
+    color: #fff;
+}
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  transition: background-color 5000s ease-in-out 0s;
+  -webkit-text-fill-color: #fff !important;
+}
+
+button {
+    position: relative;
+    border: 0;
+    border-radius: 3px;
+    padding: 8px 20px;
+    font-size: 1em;
+    letter-spacing: 1px;
+    background: #8eadce;
+    color: #fff;
+    transition: .3s ease-in-out;
+    cursor: pointer;
+    overflow: hidden;
+    z-index: 1;
+}
+  
+button:hover {
+    background: rgb(145, 182, 219);
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, .35);
+    z-index: 8;
+}
+  
+button:before {
+    display: block;
+    position: absolute;
+    content: "";
+    background: rgba(255, 255, 255, 0.15);
+    height: 100%;
+    width: 3em;
+    top: 0;
+    left: -4.5em;
+    transform: skewX(-45deg) translateX(0);
+}
+  
+button:hover:before {
+    transform: skewX(-45deg) translateX(22.5em);
+    transition: all 0.75s ease-in-out;
+}
+
+
 .data-block {
+    .data {
+        margin: 15px 0;        
+        width: 33%;
+        span {
+            display: block;
+        }
+    }
+
+    .key {
+        opacity: .5;
+    }
+    .value {
+        font-size: 1.125em;
+        opacity: 1;
+    }
+}
+.successful-container, .error-container {
     display: none;
     &.visible {
         display: block;
     }
 }
+
+.main-data {
+    .location {
+        text-align: center;
+        font-size: 1.5em;
+    }
+    .temperature {
+        display: flex;
+        align-items: center;
+    }
+    .real-temp {
+        width: auto;
+        .value{
+            font-size: 3.5em;
+            margin-right: 30px;
+        }
+    }
+    .feels-like {
+        .value {
+            font-size: 1.5em;
+        }
+    }
+}
+
+.additional-data {
+    display: flex;
+    flex-wrap: wrap;
+}
+
