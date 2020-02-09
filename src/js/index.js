@@ -1,9 +1,11 @@
 const APIKEY = 'e1df1fc3a72e0ced10d2e8bac9563a73';
-const MAP_API_URL = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyBu_KZxeeOWKC1tnynobv1-ef7TD-qCNiM&libraries=places'; 
+//const MAP_API_URL = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyBu_KZxeeOWKC1tnynobv1-ef7TD-qCNiM&libraries=places'; 
 const FORM_CURRENT_WEATHER = document.getElementById('current-weather_form');
 const FORM_FORECAST_5 = document.getElementById('forecast_form');
 const SEARCH_INPUT = document.querySelector('#city-name');
+const cityListJSON = '../city.list.json';
 let city = null;
+let curentPlaceID = null;
 
 //dom elems
 let successfulContainer = document.querySelector('.successful-container');
@@ -120,6 +122,91 @@ FORM_FORECAST_5.addEventListener('submit', function(e) {
     e.preventDefault();
     loadForecast();
 });
+
+
+////////
+
+function findUserGEOLocation() {
+    if (navigator.geolocation) {
+        var timeoutVal = 1000000;
+        //timeout - maximum response time.
+        //maximumAge - time of storage geo data in cash
+        navigator.geolocation.getCurrentPosition(displayPosition, displayError, { enableHighAccuracy: true, timeout: timeoutVal, maximumAge: 10000000 });
+    } else {
+        console.log("Geolocation не поддерживается данным браузером");
+    }
+}
+
+function displayPosition(userPos) {
+    console.log("Широта: " + userPos.coords.latitude + ", Долгота: " + userPos.coords.longitude);
+
+    var request = new XMLHttpRequest();
+    request.open('GET', cityListJSON);
+    request.responseType = 'json';
+    request.send();
+
+    request.onload = function() {
+        var cityList = request.response;
+        console.log(cityList);
+
+        let userLat = userPos.coords.latitude;
+        let userLon = userPos.coords.longitude;
+        let cityLat;
+        let cityLon;
+
+        let fitLatDifs = [];
+        let fitLonDifs = [];
+        let minLat;
+        let minLon;
+
+        let fitCities = [];
+        //test data
+        //userLat = 54.710535;
+        //userLon = 25.262938;
+        for(city of cityList) {
+            cityLat = city.coord.lat;
+            cityLon = city.coord.lon;
+            //if(userLat.toFixed(2) == cityLat.toFixed(2) && userLon.toFixed(1) == cityLon.toFixed(1)) {
+                //console.log(`${city.name}, ${city.country}: ${city.coord.lat}, ${city.coord.lon}`)
+                //curentPlaceID = city.id;
+                //console.log(curentPlaceID);
+            //}
+            
+            latDif = Math.abs(userLat - cityLat);
+            lonDif = Math.abs(userLon - cityLon);
+
+            if(latDif < 0.05 && lonDif < 0.05) {
+                fitCities.push({city: city, latDif: latDif, lonDif: lonDif});
+
+
+
+                console.log(`${city.name}, ${city.country}: ${city.coord.lat}, ${city.coord.lon}`)
+            }
+        }
+
+        console.log(fitCities)
+
+        // minLat = fitLatDifs[0];
+        // for(let i=0; i < fitLatDifs.length; i++) {
+        //     if(fitLatDifs[i] < minLat)
+        //         minLat = fitLatDifs[i];
+        // }
+
+        // minLon = fitLonDifs[0];
+        // for(let i=0; i < fitLonDifs.length; i++) {
+        //     if(fitLonDifs[i] < minLon)
+        //         minLon = fitLonDifs[i];
+        // }
+        
+    }
+    
+}
+
+
+function displayError() {
+    console.log('error')
+}
+findUserGEOLocation();
 
 
 ////////////////////////////////////////
