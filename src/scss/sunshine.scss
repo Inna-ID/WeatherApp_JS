@@ -1,0 +1,51 @@
+// @mixin clear-list {
+//     list-style: none;
+//     margin: 0;
+//     padding: 0;
+// }
+
+// ul {
+//     @include clear-list();
+// }
+
+.sun {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: rgb(255, 211, 0);
+    box-shadow: 0 0 2px 5px rgba(255, 211, 0, .9),
+    0 0 15px 20px rgba(255, 211, 0, .8),
+    0 0 15px 40px rgba(255, 211, 0, .6),
+    0 0 10px 60px rgba(255, 211, 0, .4),
+    0 0 13px 80px rgba(255, 211, 0, .2),
+    0 0 20px 100px rgba(255, 211, 0, .1);
+    animation: sunshine 2s infinite linear forwards,
+    rays 2s 2s infinite linear;
+}
+
+@keyframes sunshine {
+    0% {
+        box-shadow: none;
+    }
+}
+
+@keyframes rays {
+    0% {
+        box-shadow:
+        // 0 0 2px 10px rgba(255, 211, 0, .9),
+        0 0 15px 20px rgba(255, 211, 0, .8),
+        0 0 15px 40px rgba(255, 211, 0, .6),
+        0 0 10px 60px rgba(255, 211, 0, .4),
+        0 0 13px 80px rgba(255, 211, 0, .2),
+        0 0 20px 100px rgba(255, 211, 0, .1);
+    }
+    100% {
+        box-shadow: 
+        0 0 2px 10px rgba(255, 211, 0, .9),
+        0 0 15px 20px rgba(255, 211, 0, .8),
+        0 0 15px 40px rgba(255, 211, 0, .6),
+        0 0 10px 60px rgba(255, 211, 0, .4),
+        0 0 13px 80px rgba(255, 211, 0, .2),
+        0 0 20px 100px rgba(255, 211, 0, .1);
+    }
+}

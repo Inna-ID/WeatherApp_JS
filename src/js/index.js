@@ -138,7 +138,10 @@ function findUserGEOLocation() {
 }
 
 function displayPosition(userPos) {
-    console.log("Широта: " + userPos.coords.latitude + ", Долгота: " + userPos.coords.longitude);
+    let userLat = userPos.coords.latitude;
+    let userLon = userPos.coords.longitude;
+
+    console.log("Широта: " + userLat + ", Долгота: " + userLon);
 
     var request = new XMLHttpRequest();
     request.open('GET', cityListJSON);
@@ -147,20 +150,14 @@ function displayPosition(userPos) {
 
     request.onload = function() {
         var cityList = request.response;
-        console.log(cityList);
-
-        let userLat = userPos.coords.latitude;
-        let userLon = userPos.coords.longitude;
+        //console.log(cityList);
         let cityLat;
         let cityLon;
 
-        let fitLatDifs = [];
-        let fitLonDifs = [];
-        let minLat;
-        let minLon;
 
         let fitCities = [];
-        //test data
+
+        //vilnius
         //userLat = 54.710535;
         //userLon = 25.262938;
         for(city of cityList) {
@@ -179,24 +176,11 @@ function displayPosition(userPos) {
                 fitCities.push({city: city, latDif: latDif, lonDif: lonDif});
 
 
-
                 console.log(`${city.name}, ${city.country}: ${city.coord.lat}, ${city.coord.lon}`)
             }
         }
-
-        console.log(fitCities)
-
-        // minLat = fitLatDifs[0];
-        // for(let i=0; i < fitLatDifs.length; i++) {
-        //     if(fitLatDifs[i] < minLat)
-        //         minLat = fitLatDifs[i];
-        // }
-
-        // minLon = fitLonDifs[0];
-        // for(let i=0; i < fitLonDifs.length; i++) {
-        //     if(fitLonDifs[i] < minLon)
-        //         minLon = fitLonDifs[i];
-        // }
+        console.log('fited cities:')
+        console.log(fitCities);
         
     }
     

@@ -59,6 +59,11 @@ function fonts() {
 	.pipe(dest('dist/fonts'))
 }
 
+function json() {
+	return src('src/*.json')
+	.pipe(dest('dist/'))
+}
+
 function clear() {
 	return del('dist')
 }
@@ -72,11 +77,10 @@ function serve() {
   watch('src/**/*.html', series(html)).on('change', sync.reload)
   watch('src/scss/**.scss', series(scss)).on('change', sync.reload)
   watch('src/js/*.js', series(scripts)).on('change', sync.reload)
-  watch('src/js/*.*', series(images)).on('change', sync.reload)
-  watch('src/js/*.*', series(fonts)).on('change', sync.reload)
+  watch('src/img/*.*', series(images)).on('change', sync.reload)
 }
 
-exports.build = series(clear, scss, html, scripts, styleLibs, scriptsLibs, images, fonts)
-exports.default = series(clear, html, styleLibs, scriptsLibs, scss, scripts, images, fonts, serve)
+exports.build = series(clear, scss, html, scripts, styleLibs, scriptsLibs, images, json, fonts)
+exports.default = series(clear, html, styleLibs, scriptsLibs, scss, scripts, images, fonts, json, serve)
 
 exports.clear = clear
