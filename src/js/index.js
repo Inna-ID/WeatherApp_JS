@@ -131,31 +131,30 @@ function findUserGEOLocation() {
         var timeoutVal = 1000000;
         //timeout - maximum response time.
         //maximumAge - time of storage geo data in cash
-        navigator.geolocation.getCurrentPosition(displayPosition, displayError, { enableHighAccuracy: true, timeout: timeoutVal, maximumAge: 10000000 });
+        navigator.geolocation.getCurrentPosition(findClosestToUserPlace, displayError, { enableHighAccuracy: true, timeout: timeoutVal, maximumAge: 10000000 });
     } else {
         console.log("Geolocation не поддерживается данным браузером");
     }
 }
 
-function displayPosition(userPos) {
+/// разбить на функции сэксесс колбэк для findUserGEOLocation и получение ближайшего места для юзера
+function findClosestToUserPlace(userPos) {
     let userLat = userPos.coords.latitude;
     let userLon = userPos.coords.longitude;
+    let cityLat;
+    let cityLon;
 
-    console.log("Широта: " + userLat + ", Долгота: " + userLon);
+    console.log("User latitude: " + userLat + ", User longitude: " + userLon);
 
-    var request = new XMLHttpRequest();
+    let request = new XMLHttpRequest();
     request.open('GET', cityListJSON);
     request.responseType = 'json';
     request.send();
 
     request.onload = function() {
-        var cityList = request.response;
-        //console.log(cityList);
-        let cityLat;
-        let cityLon;
-
-
-        let fitCities = [];
+        let cityList = request.response;
+        let minDistance = 1;
+        let minDistCity;
 
         //vilnius
         //userLat = 54.710535;
@@ -163,27 +162,22 @@ function displayPosition(userPos) {
         for(city of cityList) {
             cityLat = city.coord.lat;
             cityLon = city.coord.lon;
-            //if(userLat.toFixed(2) == cityLat.toFixed(2) && userLon.toFixed(1) == cityLon.toFixed(1)) {
-                //console.log(`${city.name}, ${city.country}: ${city.coord.lat}, ${city.coord.lon}`)
-                //curentPlaceID = city.id;
-                //console.log(curentPlaceID);
-            //}
             
-            latDif = Math.abs(userLat - cityLat);
-            lonDif = Math.abs(userLon - cityLon);
+            // latDif = Math.abs(userLat - cityLat);
+            // lonDif = Math.abs(userLon - cityLon);
+            latDif = userLat - cityLat;
+            lonDif = userLon - cityLon;
 
-            if(latDif < 0.05 && lonDif < 0.05) {
-                fitCities.push({city: city, latDif: latDif, lonDif: lonDif});
+            let coordDif = Math.sqrt( Math.pow(latDif, 2) + Math.pow(lonDif, 2) );
 
-
-                console.log(`${city.name}, ${city.country}: ${city.coord.lat}, ${city.coord.lon}`)
-            }
+            if(coordDif < minDistance) {
+                minDistance = coordDif;
+                minDistCity = city;
+            }            
         }
-        console.log('fited cities:')
-        console.log(fitCities);
-        
-    }
-    
+        console.log(minDistance) 
+        console.log(minDistCity)
+    }   
 }
 
 
