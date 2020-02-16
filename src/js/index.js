@@ -137,7 +137,6 @@ function findUserGEOLocation() {
     }
 }
 
-/// разбить на функции сэксесс колбэк для findUserGEOLocation и получение ближайшего места для юзера
 function findClosestToUserPlace(userPos) {
     let userLat = userPos.coords.latitude;
     let userLon = userPos.coords.longitude;
@@ -184,6 +183,7 @@ function findClosestToUserPlace(userPos) {
 function displayError() {
     console.log('error')
 }
+// on page load
 findUserGEOLocation();
 
 
