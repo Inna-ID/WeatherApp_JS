@@ -7,6 +7,7 @@ const cityListJSON = '../city.list.json';
 let city = null;
 let curentPlaceID = null;
 let userPosition = {};
+let msPerMinute = 60000;
 
 //dom elems
 let successfulContainer = document.querySelector('.successful-container');
@@ -40,25 +41,19 @@ function setWidDerection(deg) {
 }
 
 function loadCurrentWeather(city) {
-    // $.ajax(`http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${APIKEY}&units=metric`,
-    // { 
-    //     type:'GET',
-    //     dataType:'json',
-    //     success: currentWeatherLoaded,
-    //     error: errorHandler
-    // })
-        fetch(`http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${APIKEY}&units=metric`, {method: 'GET'} )
-        .then(response => response.json())
-        .then(currentWeatherLoaded)
-        .catch(error => { console.error(error) } );
+    fetch(`http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${APIKEY}&units=metric`, {method: 'GET'} )
+    .then(response => response.json())
+    .then(currentWeatherLoaded)
+    .catch(error => { console.error(error) } );
 }
 
-function loadCurrentWeatherByID() {
-    if(!userPosition.id) {
+function loadCurrentWeatherByID(id) {
+    //userPosition.id = '625144'
+    if(!id) {
         console.log('no user position id')
         return;
     }
-    fetch(`http://api.openweathermap.org/data/2.5/weather?id=${userPosition.id}`, {method: 'GET'} )
+    fetch(`http://api.openweathermap.org/data/2.5/weather?id=${userPosition.id}&appid=${APIKEY}&units=metric`, {method: 'GET'} )
     .then(response => response.json())
     .then(currentWeatherLoaded)
     .catch(error => { console.error(error) } );
@@ -120,13 +115,6 @@ function loadForecast() {
     } else {
         cityID = '625144';
     }
-    // $.ajax(`http://api.openweathermap.org/data/2.5/forecast?id=${cityID}&appid=${APIKEY}`,
-    // { 
-    //     type:'GET',
-    //     dataType:'json',
-    //     success: forecastLoaded,
-    //     error: errorHandler
-    // })
 
     fetch(`http://api.openweathermap.org/data/2.5/forecast?id=${cityID}&appid=${APIKEY}`,
         {method: 'GET'}
@@ -140,13 +128,33 @@ function forecastLoaded(data) {
     //loaded temperature in kelvin
     let forecast = data.list;
     console.log(data);
-    forecast.forEach(function(item, arr, i) {
+
+
+    errorContainer.classList.remove('visible');
+    successfulContainer.classList.add('visible');
+    forecast.forEach(function(item) {
+        
         console.log(`${Math.round(item.main.temp -273.15)}°C at ${item.dt_txt}`)
+
+        // let newStr = item.dt_txt;
+        // newStr = newStr.split(/-|:|\s/).filter(x => x != '');
+        // newStr = newStr.join();
+
+        console.log(item.dt_txt)
+        let date = new Date(item.dt * 1000 + (new Date().getTimezoneOffset() * msPerMinutes));
+        //new Date(1581973200*1000 + (new Date().getTimezoneOffset() * 60000))
+        console.log(date.getDate())
+
+        let tempDiv = document.createElement('p')
+        tempDiv.className = 'temp';
+        tempDiv.innerText = `${Math.round(item.main.temp -273.15)}°C`;
+        successfulContainer.appendChild(tempDiv);
+
+
     });
 }
 
 BTN_FORECAST_5.addEventListener('click', function(e) {
-    //e.preventDefault();
     loadForecast();
 });
 
@@ -219,7 +227,6 @@ function findClosestToUserPlace() {
                 userPosition.id = city.id
             }            
         }
-        console.log(minDistance)
         console.log(minDistCity)
     }
 }
@@ -228,9 +235,7 @@ function findClosestToUserPlace() {
 // on page load
 findUserGEOLocation();
 
-console.log(userPosition)
-
-loadCurrentWeatherByID()
+loadCurrentWeatherByID(userPosition.id)
 
 ////////////////////////////////////////
 
