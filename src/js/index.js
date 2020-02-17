@@ -1,11 +1,12 @@
 const APIKEY = 'e1df1fc3a72e0ced10d2e8bac9563a73';
 //const MAP_API_URL = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyBu_KZxeeOWKC1tnynobv1-ef7TD-qCNiM&libraries=places'; 
 const FORM_CURRENT_WEATHER = document.getElementById('current-weather_form');
-const FORM_FORECAST_5 = document.getElementById('forecast_form');
+const BTN_FORECAST_5 = document.getElementById('btn_forecast_5');
 const SEARCH_INPUT = document.querySelector('#city-name');
 const cityListJSON = '../city.list.json';
 let city = null;
 let curentPlaceID = null;
+let userPosition = {};
 
 //dom elems
 let successfulContainer = document.querySelector('.successful-container');
@@ -39,14 +40,29 @@ function setWidDerection(deg) {
 }
 
 function loadCurrentWeather(city) {
-    $.ajax(`http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${APIKEY}&units=metric`,
-    { 
-        type:'GET',
-        dataType:'json',
-        success: currentWeatherLoaded,
-        error: errorHandler
+    // $.ajax(`http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${APIKEY}&units=metric`,
+    // { 
+    //     type:'GET',
+    //     dataType:'json',
+    //     success: currentWeatherLoaded,
+    //     error: errorHandler
+    // })
+        fetch(`http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${APIKEY}&units=metric`, {method: 'GET'} )
+        .then(response => response.json())
+        .then(currentWeatherLoaded)
+        .catch(error => { console.error(error) } );
+}
+
+function loadCurrentWeatherByID() {
+    if(!userPosition.id) {
+        console.log('no user position id')
+        return;
     }
-)}
+    fetch(`http://api.openweathermap.org/data/2.5/weather?id=${userPosition.id}`, {method: 'GET'} )
+    .then(response => response.json())
+    .then(currentWeatherLoaded)
+    .catch(error => { console.error(error) } );
+}
 
 function convertToGTM0(timezone) {
 
@@ -98,15 +114,27 @@ FORM_CURRENT_WEATHER.addEventListener('submit', function(e) {
 //////////// forecast for 5 days
 
 function loadForecast() {
-    let cityID = '625144'
-    $.ajax(`http://api.openweathermap.org/data/2.5/forecast?id=${cityID}&appid=${APIKEY}`,
-    { 
-        type:'GET',
-        dataType:'json',
-        success: forecastLoaded,
-        error: errorHandler
+    let cityID;
+    if(userPosition.id) {
+        cityID = userPosition.id;
+    } else {
+        cityID = '625144';
     }
-)}
+    // $.ajax(`http://api.openweathermap.org/data/2.5/forecast?id=${cityID}&appid=${APIKEY}`,
+    // { 
+    //     type:'GET',
+    //     dataType:'json',
+    //     success: forecastLoaded,
+    //     error: errorHandler
+    // })
+
+    fetch(`http://api.openweathermap.org/data/2.5/forecast?id=${cityID}&appid=${APIKEY}`,
+        {method: 'GET'}
+    )
+    .then(response => response.json())
+    .then(forecastLoaded)
+    .catch(error => { console.error(error) } );
+}
 
 function forecastLoaded(data) {
     //loaded temperature in kelvin
@@ -115,11 +143,10 @@ function forecastLoaded(data) {
     forecast.forEach(function(item, arr, i) {
         console.log(`${Math.round(item.main.temp -273.15)}°C at ${item.dt_txt}`)
     });
-
 }
 
-FORM_FORECAST_5.addEventListener('submit', function(e) {
-    e.preventDefault();
+BTN_FORECAST_5.addEventListener('click', function(e) {
+    //e.preventDefault();
     loadForecast();
 });
 
@@ -131,19 +158,36 @@ function findUserGEOLocation() {
         var timeoutVal = 1000000;
         //timeout - maximum response time.
         //maximumAge - time of storage geo data in cash
-        navigator.geolocation.getCurrentPosition(findClosestToUserPlace, displayError, { enableHighAccuracy: true, timeout: timeoutVal, maximumAge: 10000000 });
+        if(JSON.stringify(userPosition) != "{}") {
+            findClosestToUserPlace(userPosition)
+        } else {
+            navigator.geolocation.getCurrentPosition(successCallBack, errorCallBack, 
+                    { enableHighAccuracy: true, timeout: timeoutVal, maximumAge: 10000000 });
+        }
     } else {
         console.log("Geolocation не поддерживается данным браузером");
     }
 }
 
-function findClosestToUserPlace(userPos) {
-    let userLat = userPos.coords.latitude;
-    let userLon = userPos.coords.longitude;
+function successCallBack(userPos) {
+    setUserPosition(userPos)
+    findClosestToUserPlace();
+}
+function errorCallBack() {
+    console.log('error')
+}
+
+function setUserPosition(userPos) {
+    userPosition.lat = userPos.coords.latitude;
+    userPosition.lon = userPos.coords.longitude;
+    console.log("User latitude: " + userPosition.lat + "\nUser longitude: " + userPosition.lon);
+}
+
+function findClosestToUserPlace() {
+    let userLat = userPosition.lat;
+    let userLon = userPosition.lon;
     let cityLat;
     let cityLon;
-
-    console.log("User latitude: " + userLat + ", User longitude: " + userLon);
 
     let request = new XMLHttpRequest();
     request.open('GET', cityListJSON);
@@ -172,20 +216,21 @@ function findClosestToUserPlace(userPos) {
             if(coordDif < minDistance) {
                 minDistance = coordDif;
                 minDistCity = city;
+                userPosition.id = city.id
             }            
         }
-        console.log(minDistance) 
+        console.log(minDistance)
         console.log(minDistCity)
-    }   
+    }
 }
 
 
-function displayError() {
-    console.log('error')
-}
 // on page load
 findUserGEOLocation();
 
+console.log(userPosition)
+
+loadCurrentWeatherByID()
 
 ////////////////////////////////////////
 

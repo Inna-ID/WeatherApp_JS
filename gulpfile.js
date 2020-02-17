@@ -42,7 +42,7 @@ function scripts() {
 	.pipe(dest('dist/js'))
 }
 
-function scriptsLibs() {
+function scriptLibs() {
 	return src('src/js/libs/*.js')
 	.pipe(uglify())
 	.pipe(concat('libs.min.js'))
@@ -78,9 +78,10 @@ function serve() {
   watch('src/scss/**.scss', series(scss)).on('change', sync.reload)
   watch('src/js/*.js', series(scripts)).on('change', sync.reload)
   watch('src/img/*.*', series(images)).on('change', sync.reload)
+  watch('src/fonts/*.*', series(fonts)).on('change', sync.reload)
 }
 
-exports.build = series(clear, scss, html, scripts, styleLibs, scriptsLibs, images, json, fonts)
-exports.default = series(clear, html, styleLibs, scriptsLibs, scss, scripts, images, fonts, json, serve)
+exports.build = series(clear, scss, html, scripts, styleLibs, scriptLibs, images, json, fonts)
+exports.default = series(clear, html, styleLibs, scriptLibs, scss, scripts, images, fonts, json, serve)
 
 exports.clear = clear
