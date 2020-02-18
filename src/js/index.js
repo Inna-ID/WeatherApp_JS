@@ -1,6 +1,6 @@
 const APIKEY = 'e1df1fc3a72e0ced10d2e8bac9563a73';
 //const MAP_API_URL = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyBu_KZxeeOWKC1tnynobv1-ef7TD-qCNiM&libraries=places'; 
-const FORM_CURRENT_WEATHER = document.getElementById('current-weather_form');
+const BTN_FORECAST_NOW = document.getElementById('btn_now');
 const BTN_FORECAST_5 = document.getElementById('btn_forecast_5');
 const SEARCH_INPUT = document.querySelector('#city-name');
 const cityListJSON = '../city.list.json';
@@ -47,7 +47,8 @@ function loadCurrentWeather(city) {
     fetch(`http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${APIKEY}&units=metric`, {method: 'GET'} )
     .then(response => response.json())
     .then(currentWeatherLoaded)
-    .catch(error => { console.error(error) } );
+    //.catch(error => { console.error(error) } );
+    .catch(errorHandler)
 }
 
 function loadCurrentWeatherByID(id) {
@@ -59,7 +60,8 @@ function loadCurrentWeatherByID(id) {
     fetch(`http://api.openweathermap.org/data/2.5/weather?id=${userPosition.id}&appid=${APIKEY}&units=metric`, {method: 'GET'} )
     .then(response => response.json())
     .then(currentWeatherLoaded)
-    .catch(error => { console.error(error) } );
+    //.catch(error => { console.error(error) } );
+    .catch(errorHandler)
 }
 
 function convertToGTM0(timezone) {
@@ -68,8 +70,9 @@ function convertToGTM0(timezone) {
 
 function currentWeatherLoaded(data) {
     console.log(data);
-    errorContainer.classList.remove('visible');
-    successfulContainer.classList.add('visible');
+
+    hideAllChilds(successfulContainer)
+    document.querySelector('.forecast_now').style.display = 'block';
 
     const {name: city, 
         timezone,
@@ -97,15 +100,15 @@ function currentWeatherLoaded(data) {
 
 
 function errorHandler(jqXHR,statusStr,errorStr) {
-    successfulContainer.classList.remove('visible');
-    errorContainer.classList.add('visible');
-    document.querySelector('.error-text').innerText = 'city not found';
+    //successfulContainer.classList.remove('visible');
+    hideAllChilds(successfulContainer);
 
+    errorContainer.style.display = 'block';
+    document.querySelector('.error-text').innerText = 'city not found';
     console.log(statusStr+' '+errorStr);
 }
 
-FORM_CURRENT_WEATHER.addEventListener('submit', function(e) {
-    e.preventDefault();
+BTN_FORECAST_NOW.addEventListener('click', function(e) {
     getCity();
 });
 
@@ -124,16 +127,21 @@ function loadForecast() {
     )
     .then(response => response.json())
     .then(forecastLoaded)
-    .catch(error => { console.error(error) } );
+    .catch(errorHandler);
 }
+
 
 function forecastLoaded(data) {
     //loaded temperature in kelvin
     let forecast = data.list;
+    let container = document.querySelector('.forecast_five-days')
     console.log(data);
 
-    errorContainer.classList.remove('visible');
-    successfulContainer.classList.add('visible');
+    
+    //successfulContainer.classList.add('visible');
+    hideAllChilds(successfulContainer)
+    container.style.display = 'block';
+
 
     let day;
     forecast.forEach(function(item) {        
@@ -171,7 +179,7 @@ function forecastLoaded(data) {
             
             dayDiv.appendChild(dateDiv);
             dayDiv.appendChild(hoursDiv);
-            successfulContainer.appendChild(dayDiv)
+            container.appendChild(dayDiv)
         } else {
             console.log(day)
             let curDayDiv = document.querySelectorAll('.day');
@@ -193,6 +201,14 @@ function forecastLoaded(data) {
             curHoursDiv.appendChild(hourDiv);
         }
     });
+}
+
+function hideAllChilds(parent) {
+    errorContainer.style.display = 'none';
+    for(let item of parent.children) {
+        item.style.display = 'none'
+    }
+    
 }
 
 BTN_FORECAST_5.addEventListener('click', function(e) {
@@ -266,7 +282,7 @@ function findClosestToUserPlace() {
                 minDistance = coordDif;
                 minDistCity = city;
                 userPosition.id = city.id
-            }            
+            }
         }
         console.log(minDistCity)
     }

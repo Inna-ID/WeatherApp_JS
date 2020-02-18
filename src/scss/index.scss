@@ -127,12 +127,12 @@ button:hover:before {
         opacity: 1;
     }
 }
-.successful-container, .error-container {
-    display: none;
-    &.visible {
-        display: block;
-    }
-}
+// .successful-container, .error-container {
+//     display: none;
+//     &.visible {
+//         display: block;
+//     }
+// }
 
 .main-data {
     .location {
@@ -162,7 +162,12 @@ button:hover:before {
     flex-wrap: wrap;
 }
 
+
+.forecast_now, .forecast_five-days {
+    display: none;
+}
 /////// 5 days forecast
+
 .day {
     margin-bottom: 40px;
     .date {
