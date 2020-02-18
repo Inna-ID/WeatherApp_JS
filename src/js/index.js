@@ -7,7 +7,10 @@ const cityListJSON = '../city.list.json';
 let city = null;
 let curentPlaceID = null;
 let userPosition = {};
-let msPerMinute = 60000;
+let msPerMinutes = 60000;
+const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+];
 
 //dom elems
 let successfulContainer = document.querySelector('.successful-container');
@@ -129,28 +132,66 @@ function forecastLoaded(data) {
     let forecast = data.list;
     console.log(data);
 
-
     errorContainer.classList.remove('visible');
     successfulContainer.classList.add('visible');
-    forecast.forEach(function(item) {
-        
-        console.log(`${Math.round(item.main.temp -273.15)}°C at ${item.dt_txt}`)
 
+    let day;
+    forecast.forEach(function(item) {        
+        console.log(`${Math.round(item.main.temp -273.15)}°C at ${item.dt_txt}`)
         // let newStr = item.dt_txt;
         // newStr = newStr.split(/-|:|\s/).filter(x => x != '');
         // newStr = newStr.join();
 
         console.log(item.dt_txt)
         let date = new Date(item.dt * 1000 + (new Date().getTimezoneOffset() * msPerMinutes));
-        //new Date(1581973200*1000 + (new Date().getTimezoneOffset() * 60000))
-        console.log(date.getDate())
-
-        let tempDiv = document.createElement('p')
-        tempDiv.className = 'temp';
-        tempDiv.innerText = `${Math.round(item.main.temp -273.15)}°C`;
-        successfulContainer.appendChild(tempDiv);
 
 
+        if(day != date.getDate()) {
+            day = date.getDate();
+            let dayDiv = document.createElement('div');
+            dayDiv.className = 'day';
+            let dateDiv = document.createElement('p');
+            dateDiv.className = 'date';
+            dateDiv.innerText = `${date.getDate()} ${monthNames[date.getMonth()]}`;
+            let hoursDiv = document.createElement('div');
+            hoursDiv.className = 'hours';
+            let hourDiv = document.createElement('div');
+            hourDiv.className = 'hour';
+            let timeDiv = document.createElement('p');
+            timeDiv.className = 'time';
+            timeDiv.innerText = `${setZero(date.getHours())}:${setZero(date.getMinutes())}`;
+
+            let tempDiv = document.createElement('p');
+            tempDiv.className = 'temperature';
+            tempDiv.innerText =  `${Math.round(item.main.temp -273.15)}°C`;
+
+            hourDiv.appendChild(timeDiv)
+            hourDiv.appendChild(tempDiv);
+            hoursDiv.appendChild(hourDiv);
+            
+            dayDiv.appendChild(dateDiv);
+            dayDiv.appendChild(hoursDiv);
+            successfulContainer.appendChild(dayDiv)
+        } else {
+            console.log(day)
+            let curDayDiv = document.querySelectorAll('.day');
+            curDayDiv = curDayDiv[curDayDiv.length-1];
+            let curHoursDiv = curDayDiv.querySelector('.hours');
+            console.log(curHoursDiv)
+
+            let hourDiv = document.createElement('div');
+            hourDiv.className = 'hour';
+            let timeDiv = document.createElement('p');
+            timeDiv.className = 'time';
+            timeDiv.innerText = `${setZero(date.getHours())}:${setZero(date.getMinutes())}`;
+            let tempDiv = document.createElement('p');
+            tempDiv.className = 'temperature';
+            tempDiv.innerText =  `${Math.round(item.main.temp -273.15)}°C`;
+
+            hourDiv.appendChild(timeDiv)
+            hourDiv.appendChild(tempDiv);
+            curHoursDiv.appendChild(hourDiv);
+        }
     });
 }
 
