@@ -43,6 +43,14 @@ function setWidDerection(deg) {
     }
 }
 
+
+function setWeatherConditionImg(wc) {
+    switch(true) {
+        case (wc == 'broken clouds') : return
+    }
+}
+
+
 function loadCurrentWeather(city) {
     fetch(`http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${APIKEY}&units=metric`, {method: 'GET'} )
     .then(response => response.json())
@@ -296,22 +304,24 @@ loadCurrentWeatherByID(userPosition.id)
 
 ////////////////////////////////////////
 
-// function autoComplete() {
-//     // setTimeout( () => {
-//     //     new google.maps.places.Autocomplete(SEARCH_INPUT);
-//     // }, 1000)
-//     fetch("https://wft-geo-db.p.rapidapi.com/v1/locale/locales", {
-//         "method": "GET",
-//         // "headers": {
-//         //     "x-rapidapi-host": "wft-geo-db.p.rapidapi.com",
-//         //     "x-rapidapi-key": "SIGN-UP-FOR-KEY"
-//         // }
-//     })
-//     .then(response => {
-//         console.log(response);
-//     })
-//     .catch(err => {
-//         console.log(err);
-//     });
-// }
-//SEARCH_INPUT.addEventListener('keyup', autoComplete);
+function autoComplete() {    
+    setTimeout( () => {
+        let request = new XMLHttpRequest();
+        request.open('GET', cityListJSON);
+        request.responseType = 'json';
+        request.send();
+    
+        request.onload = function() {
+            let cityList = request.response;
+
+            let regExp = new RegExp(`^${SEARCH_INPUT.value}`);
+
+            for(city of cityList) {
+                if(regExp.test(city.name.toLowerCase())) {
+                    console.log(city.name)
+                }
+            }
+        }
+    }, 1000)
+}
+SEARCH_INPUT.addEventListener('keyup', autoComplete);
