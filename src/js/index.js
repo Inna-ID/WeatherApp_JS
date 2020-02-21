@@ -16,6 +16,10 @@ const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
 let successfulContainer = document.querySelector('.successful-container');
 let errorContainer = document.querySelector('.error-container');
 
+document.querySelector('#current-weather_form').addEventListener('submit', function(e) {
+    e.preventDefault();
+});
+
 function getCity() {
     city = document.getElementById('city-name').value;
     if(!city) {
@@ -303,9 +307,9 @@ findUserGEOLocation();
 loadCurrentWeatherByID(userPosition.id)
 
 ////////////////////////////////////////
-
+let ii = 0;
 function autoComplete() {    
-    setTimeout( () => {
+   
         let request = new XMLHttpRequest();
         request.open('GET', cityListJSON);
         request.responseType = 'json';
@@ -318,10 +322,27 @@ function autoComplete() {
 
             for(city of cityList) {
                 if(regExp.test(city.name.toLowerCase())) {
-                    console.log(city.name)
+                    ii+=1
+                    console.log(ii + '-' + city.name)
+                    fillDropDown(city.name)
                 }
             }
         }
-    }, 1000)
 }
-SEARCH_INPUT.addEventListener('keyup', autoComplete);
+
+function fillDropDown(text) {
+    let dd = document.querySelector('.drop-down');
+    let ddItem = document.createElement('div');
+    ddItem.className = 'dd-item';
+    ddItem.innerText = text;
+    dd.appendChild(ddItem);
+}
+
+SEARCH_INPUT.addEventListener('keyup', function() {
+    if(SEARCH_INPUT.value.length < 3) {
+        return;
+    }
+    //setTimeout( () => {
+        autoComplete()
+    //}, 1000)
+});
