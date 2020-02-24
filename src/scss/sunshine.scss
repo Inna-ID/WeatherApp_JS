@@ -41,9 +41,38 @@
 }
 
 ////// broken cloud
+.clouds-wrap {
+    position: relative;
+}
 .broken-cloud {
     width: 200px;
     height: 200px;
-    background: url(../img/cloud.png) no-repeat;
+    margin-left: auto;
+    position: relative;
+    top: 0;
+    right: 0;
+    background: url(../img/cloud_w.png) no-repeat;
     background-size: 100%;
+    animation: move 35s infinite;
+    z-index: 1;
+    opacity: .4;
+
+}
+.broken-cloud2 {
+    width: 150px;
+    height: 150px;
+    position: absolute;
+    background: url(../img/cloud_w.png) no-repeat;
+    background-size: 100%;
+    top: -30px;
+    right: -10px;
+    animation: move 35s infinite;
+    z-index: 0;
+    opacity: .2;
+}
+
+
+@keyframes move {
+    0% {right: -200px;}
+    100% {right: 110%;}
 }

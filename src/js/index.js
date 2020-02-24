@@ -3,10 +3,12 @@ const APIKEY = 'e1df1fc3a72e0ced10d2e8bac9563a73';
 const BTN_FORECAST_NOW = document.getElementById('btn_now');
 const BTN_FORECAST_5 = document.getElementById('btn_forecast_5');
 const SEARCH_INPUT = document.querySelector('#city-name');
+const DROP_DOWN = document.querySelector('.drop-down');
 const cityListJSON = '../city.list.json';
 let city = null;
 let curentPlaceID = null;
 let userPosition = {};
+let requestedCity = {};
 let msPerMinutes = 60000;
 const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
   "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
@@ -20,18 +22,17 @@ document.querySelector('#current-weather_form').addEventListener('submit', funct
     e.preventDefault();
 });
 
-function getCity() {
-    city = document.getElementById('city-name').value;
-    if(!city) {
-        console.log('enter city name');
-        return;
-    }
-    loadCurrentWeather(city);
-}
 
 setZero = time => (
     time < 10 ? '0' + time : time
 )
+
+function hideAllChilds(parent) {
+    errorContainer.style.display = 'none';
+    for(let item of parent.children) {
+        item.style.display = 'none'
+    }
+}
 
 function setWidDerection(deg) {
     switch(true) {
@@ -50,38 +51,58 @@ function setWidDerection(deg) {
 
 function setWeatherConditionImg(wc) {
     switch(true) {
-        case (wc == 'broken clouds') : return
+        case (wc == 'clear sky') : return
+        case (wc == 'few clouds') : return
+        case (wc == 'scattered clouds') : return
+        case (wc == 'shower rain') : return
+        case (wc == 'rain') : return
+        case (wc == 'thunderstorm') : return
+        case (wc == 'snow') : return
+        case (wc == 'mist') : return
     }
 }
 
+
+//////////// current weather ////////////
+
+// function setClosestCityToUserToSearchInput() {
+//     SEARCH_INPUT.value = userPosition.city;
+// }
+
+function fillSearchInputRequestedCity(city) {
+    SEARCH_INPUT.value = city;
+}
+
+function getCity() {
+    city = SEARCH_INPUT.value;
+    if(!city) {
+        console.log('enter city name');
+        return;
+    }
+    loadCurrentWeather(city);
+}
 
 function loadCurrentWeather(city) {
     fetch(`http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${APIKEY}&units=metric`, {method: 'GET'} )
     .then(response => response.json())
     .then(currentWeatherLoaded)
-    //.catch(error => { console.error(error) } );
     .catch(errorHandler)
 }
 
 function loadCurrentWeatherByID(id) {
-    //userPosition.id = '625144'
     if(!id) {
         console.log('no user position id')
         return;
     }
-    fetch(`http://api.openweathermap.org/data/2.5/weather?id=${userPosition.id}&appid=${APIKEY}&units=metric`, {method: 'GET'} )
+    fetch(`http://api.openweathermap.org/data/2.5/weather?id=${id}&appid=${APIKEY}&units=metric`, {method: 'GET'} )
     .then(response => response.json())
     .then(currentWeatherLoaded)
-    //.catch(error => { console.error(error) } );
     .catch(errorHandler)
 }
 
-function convertToGTM0(timezone) {
-
-}
 
 function currentWeatherLoaded(data) {
-    console.log(data);
+    //console.log(data);
 
     hideAllChilds(successfulContainer)
     document.querySelector('.forecast_now').style.display = 'block';
@@ -112,7 +133,6 @@ function currentWeatherLoaded(data) {
 
 
 function errorHandler(jqXHR,statusStr,errorStr) {
-    //successfulContainer.classList.remove('visible');
     hideAllChilds(successfulContainer);
 
     errorContainer.style.display = 'block';
@@ -120,51 +140,45 @@ function errorHandler(jqXHR,statusStr,errorStr) {
     console.log(statusStr+' '+errorStr);
 }
 
-BTN_FORECAST_NOW.addEventListener('click', function(e) {
+BTN_FORECAST_NOW.addEventListener('click', function() {
     getCity();
 });
 
-//////////// forecast for 5 days
 
-function loadForecast() {
+
+
+//////////// forecast for 5 days ////////////
+
+function loadForecast_5() {
     let cityID;
-    if(userPosition.id) {
-        cityID = userPosition.id;
+    if(requestedCity.id) {
+        cityID = requestedCity.id;
     } else {
-        cityID = '625144';
+        //cityID = '625144';
     }
 
     fetch(`http://api.openweathermap.org/data/2.5/forecast?id=${cityID}&appid=${APIKEY}`,
         {method: 'GET'}
     )
     .then(response => response.json())
-    .then(forecastLoaded)
+    .then(forecast_5_Loaded)
     .catch(errorHandler);
 }
 
 
-function forecastLoaded(data) {
+function forecast_5_Loaded(data) {
     //loaded temperature in kelvin
     let forecast = data.list;
     let container = document.querySelector('.forecast_five-days')
-    console.log(data);
-
     
-    //successfulContainer.classList.add('visible');
     hideAllChilds(successfulContainer)
+
     container.style.display = 'block';
 
-
     let day;
-    forecast.forEach(function(item) {        
-        console.log(`${Math.round(item.main.temp -273.15)}°C at ${item.dt_txt}`)
-        // let newStr = item.dt_txt;
-        // newStr = newStr.split(/-|:|\s/).filter(x => x != '');
-        // newStr = newStr.join();
-
-        console.log(item.dt_txt)
+    forecast.forEach(function(item) {
+        //console.log(item.dt_txt)
         let date = new Date(item.dt * 1000 + (new Date().getTimezoneOffset() * msPerMinutes));
-
 
         if(day != date.getDate()) {
             day = date.getDate();
@@ -193,11 +207,10 @@ function forecastLoaded(data) {
             dayDiv.appendChild(hoursDiv);
             container.appendChild(dayDiv)
         } else {
-            console.log(day)
             let curDayDiv = document.querySelectorAll('.day');
             curDayDiv = curDayDiv[curDayDiv.length-1];
             let curHoursDiv = curDayDiv.querySelector('.hours');
-            console.log(curHoursDiv)
+            //console.log(curHoursDiv)
 
             let hourDiv = document.createElement('div');
             hourDiv.className = 'hour';
@@ -215,20 +228,13 @@ function forecastLoaded(data) {
     });
 }
 
-function hideAllChilds(parent) {
-    errorContainer.style.display = 'none';
-    for(let item of parent.children) {
-        item.style.display = 'none'
-    }
-    
-}
 
-BTN_FORECAST_5.addEventListener('click', function(e) {
-    loadForecast();
+BTN_FORECAST_5.addEventListener('click', function() {
+    loadForecast_5();
 });
 
 
-////////
+//////// User geo location ////////
 
 function findUserGEOLocation() {
     if (navigator.geolocation) {
@@ -238,7 +244,7 @@ function findUserGEOLocation() {
         if(JSON.stringify(userPosition) != "{}") {
             findClosestToUserPlace(userPosition)
         } else {
-            navigator.geolocation.getCurrentPosition(successCallBack, errorCallBack, 
+            navigator.geolocation.getCurrentPosition(successCallBackGEO, errorCallBack, 
                     { enableHighAccuracy: true, timeout: timeoutVal, maximumAge: 10000000 });
         }
     } else {
@@ -246,15 +252,15 @@ function findUserGEOLocation() {
     }
 }
 
-function successCallBack(userPos) {
-    setUserPosition(userPos)
+function successCallBackGEO(userPos) {
+    setUserCoordinates(userPos)
     findClosestToUserPlace();
 }
 function errorCallBack() {
     console.log('error')
 }
 
-function setUserPosition(userPos) {
+function setUserCoordinates(userPos) {
     userPosition.lat = userPos.coords.latitude;
     userPosition.lon = userPos.coords.longitude;
     console.log("User latitude: " + userPosition.lat + "\nUser longitude: " + userPosition.lon);
@@ -274,75 +280,123 @@ function findClosestToUserPlace() {
     request.onload = function() {
         let cityList = request.response;
         let minDistance = 1;
-        let minDistCity;
 
-        //vilnius
-        //userLat = 54.710535;
-        //userLon = 25.262938;
+
         for(city of cityList) {
             cityLat = city.coord.lat;
-            cityLon = city.coord.lon;
-            
+            cityLon = city.coord.lon;            
             // latDif = Math.abs(userLat - cityLat);
             // lonDif = Math.abs(userLon - cityLon);
             latDif = userLat - cityLat;
             lonDif = userLon - cityLon;
 
-            let coordDif = Math.sqrt( Math.pow(latDif, 2) + Math.pow(lonDif, 2) );
+            //find the distance between user coords and city(place) coords from the city list
+            //by the Pythagorean theorem
+            let distance = Math.sqrt( Math.pow(latDif, 2) + Math.pow(lonDif, 2) );
 
-            if(coordDif < minDistance) {
-                minDistance = coordDif;
-                minDistCity = city;
-                userPosition.id = city.id
+            if(distance < minDistance) {
+                minDistance = distance;
+                userPosition.city = city.name;
+                userPosition.id = city.id;
+
+                // also set user position credentials for request city
+                requestedCity.id = city.id;
+                requestedCity.name = city.name;
             }
         }
-        console.log(minDistCity)
+
+        fillSearchInputRequestedCity(userPosition.city)
+        loadCurrentWeatherByID(userPosition.id)       
+        console.log(userPosition)
     }
 }
-
 
 // on page load
 findUserGEOLocation();
 
-loadCurrentWeatherByID(userPosition.id)
 
-////////////////////////////////////////
-let ii = 0;
-function autoComplete() {    
-   
-        let request = new XMLHttpRequest();
-        request.open('GET', cityListJSON);
-        request.responseType = 'json';
-        request.send();
-    
-        request.onload = function() {
-            let cityList = request.response;
 
-            let regExp = new RegExp(`^${SEARCH_INPUT.value}`);
 
-            for(city of cityList) {
-                if(regExp.test(city.name.toLowerCase())) {
-                    ii+=1
-                    console.log(ii + '-' + city.name)
-                    fillDropDown(city.name)
-                }
+///////////////////  Auto Complete  /////////////////////
+
+let inpVal = '';
+function autoComplete() {
+    inpVal = SEARCH_INPUT.value;
+
+    let request = new XMLHttpRequest();
+    request.open('GET', cityListJSON);
+    request.responseType = 'json';
+    request.send();
+
+    request.onload = function() {
+        let cityList = request.response;
+        let regExp = new RegExp(`^${SEARCH_INPUT.value}`);
+
+        let fitCities = [];
+        for(city of cityList) {
+            if(regExp.test(city.name.toLowerCase())) {
+                fitCities.push(city)
             }
         }
+
+        // fitCities.forEach(function(city) {
+        //     fillDropDown(city.id, city.name, city.country)
+        // })
+
+        //the first 10 fitted cities
+        for(let i=0; i<10; i++) {
+            fillDropDown(fitCities[i].id, fitCities[i].name, fitCities[i].country)
+        }
+    }
 }
 
-function fillDropDown(text) {
-    let dd = document.querySelector('.drop-down');
-    let ddItem = document.createElement('div');
+function fillDropDown(id, city, country) {
+    let ddItem = document.createElement('div');  
     ddItem.className = 'dd-item';
-    ddItem.innerText = text;
-    dd.appendChild(ddItem);
+    ddItem.dataset.id = id;
+    ddItem.innerText = `${city}, ${country}`;
+    DROP_DOWN.appendChild(ddItem);
+
+    if(!DROP_DOWN.classList.contains('show')) {
+        DROP_DOWN.className += ' show';
+    } 
 }
 
 SEARCH_INPUT.addEventListener('keyup', function() {
     if(SEARCH_INPUT.value.length < 3) {
         return;
     }
-    //setTimeout( () => {
-        autoComplete()
-    //}, 1000)
+    // clear offered cities
+    DROP_DOWN.innerHTML = '';
+    autoComplete();
 });
+
+SEARCH_INPUT.addEventListener('focusin', function(e) {
+    e.target.value = '';
+    DROP_DOWN.className += ' show';
+})
+
+SEARCH_INPUT.addEventListener('focusout', function(e) {
+    if(requestedCity.name) {
+        e.target.value = requestedCity.name;
+    }    
+})
+
+document.addEventListener('click', function(e) {
+    // если элемент по которому кликнули не search-block или его дочерние элементы, то скрыть дроп даун
+    if(e.target.parentElement !== DROP_DOWN && e.target != SEARCH_INPUT) {
+        DROP_DOWN.classList.remove('show');
+    }
+})
+
+DROP_DOWN.addEventListener('click', function(e) {
+    if(!e.target.dataset.id) {
+        return;
+    }
+    requestedCity.id = e.target.dataset.id;
+    requestedCity.name = e.target.innerText;
+
+    loadCurrentWeatherByID(requestedCity.id);
+    e.target.parentElement.classList.remove('show');
+    fillSearchInputRequestedCity(requestedCity.name);
+})
