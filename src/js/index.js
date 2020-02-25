@@ -1,5 +1,4 @@
 const APIKEY = 'e1df1fc3a72e0ced10d2e8bac9563a73';
-//const MAP_API_URL = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyBu_KZxeeOWKC1tnynobv1-ef7TD-qCNiM&libraries=places'; 
 const BTN_FORECAST_NOW = document.getElementById('btn_now');
 const BTN_FORECAST_5 = document.getElementById('btn_forecast_5');
 const SEARCH_INPUT = document.querySelector('#city-name');
@@ -29,12 +28,6 @@ setZero = time => (
     time < 10 ? '0' + time : time
 )
 
-// function hideAllChilds(parent) {
-//     errorContainer.style.display = 'none';
-//     for(let item of parent.children) {
-//         item.style.display = 'none'
-//     }
-// }
 
 function showSuccessfulLayout(elem) {
     errorContainer.style.display = 'none';
@@ -42,6 +35,7 @@ function showSuccessfulLayout(elem) {
         item.style.display = 'none';
     }
     elem.style.display = 'block';
+
 }
 
 function showErrorContainer(errorText) {
@@ -135,10 +129,8 @@ function loadCurrentWeatherByID(id) {
 
 function currentWeatherLoaded(data) {
     console.log(data);
-
-    //hideAllChilds(successfulContainer)
-    
-    showSuccessfulLayout(forecastNowContainer)
+    //hideAllChilds(successfulContainer)    
+    showSuccessfulLayout(forecastNowContainer);
 
     const {name: city, 
         timezone,
@@ -202,9 +194,8 @@ function forecast_5_Loaded(data) {
     //loaded temperature in kelvin
     let forecast = data.list;  
     //hideAllChilds(successfulContainer);
-    //container.style.display = 'block';
     showSuccessfulLayout(forecast5DaysContainer)
-
+    forecast5DaysContainer.innerHTML = '';
     let day;
     forecast.forEach(function(item) {
         //console.log(item.dt_txt)
@@ -350,7 +341,7 @@ findUserGEOLocation();
 ///////////////////  Auto Complete  /////////////////////
 
 let inpVal = '';
-function autoComplete() {
+function autoComplete(curSym) {
     inpVal = SEARCH_INPUT.value;
 
     let request = new XMLHttpRequest();
@@ -360,20 +351,37 @@ function autoComplete() {
 
     request.onload = function() {
         let cityList = request.response;
-        let regExp = new RegExp(`^${SEARCH_INPUT.value}`);
+        let searchValue = SEARCH_INPUT.value;
+        let regExp = new RegExp(`^${searchValue}`);
 
         let fitCities = [];
         for(city of cityList) {
+            
+            if(searchValue != SEARCH_INPUT.value) {
+                return;
+            }
             if(regExp.test(city.name.toLowerCase())) {
                 fitCities.push(city)
             }
         }
 
-        // fitCities.forEach(function(city) {
-        //     fillDropDown(city.id, city.name, city.country)
-        // })
+        // sort fitted cities by alphabet
+        fitCities.sort(function(a,b) {
+            var nameA=a.name.toLowerCase(), nameB=b.name.toLowerCase()
+            if (nameA < nameB) {
+                //sort by increase
+                return -1
+            }  
+            if (nameA > nameB) {
+                return 1
+            }            
+            return 0 // no sort
+        })
 
-        //the first 10 fitted cities
+        // clear offered cities
+        DROP_DOWN.innerHTML = '';
+        
+        //the first 10 fitted and sorted cities        
         for(let i=0; i<10; i++) {
             fillDropDown(fitCities[i].id, fitCities[i].name, fitCities[i].country)
         }
@@ -393,12 +401,12 @@ function fillDropDown(id, city, country) {
 }
 
 SEARCH_INPUT.addEventListener('keyup', function() {
+    let curSym = SEARCH_INPUT.value;
     if(SEARCH_INPUT.value.length < 3) {
         return;
     }
-    // clear offered cities
-    DROP_DOWN.innerHTML = '';
-    autoComplete();
+    
+    autoComplete(curSym);
 });
 
 SEARCH_INPUT.addEventListener('focusin', function(e) {

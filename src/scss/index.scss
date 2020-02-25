@@ -38,21 +38,16 @@ input {
 
 .main-content {
     width: 800px;
+    padding-top: 30px;
     margin-left: auto;
     margin-right: auto;
     position: relative;
 }
 
-
 .titte-block {
     margin-bottom: 5%;
 }
-.title {
-    
-}
-.description {
-    
-}
+
 
 .search-block {
     width: 40%;
@@ -219,12 +214,13 @@ button:hover:before {
     .date {
         font-size: 1.2em;
         font-weight: 600;
+        margin-bottom: 10px;
     }
     .hours {
         display: flex;
     }
     .hour {
-        margin-right: 25px;
+        margin-right: 35px;
     }
     .temperature {
         font-size: 1.4em;

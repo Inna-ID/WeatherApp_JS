@@ -5,8 +5,8 @@
 	border-radius: 100%; 
 	box-shadow: rgba(255,255,0,0.2) 0 0 5px 5px;
 	content: '';  
-	height: 90px;
-	width: 90px;  
+	height: 120px;
+	width: 120px;  
 	position: absolute; 
 	left: 60px; 
 	top: 60px;
@@ -17,8 +17,8 @@
     box-shadow: rgba(255,255,0,1) 0 0 5px 1px;
 	border-radius: 100%; 
 	content: '';  
-	height: 86px;
-	width: 86px;  
+	height: 120px;
+	width: 120px;  
 	position: absolute; 
 	left: 2px; 
 	top: 2px;
@@ -42,7 +42,7 @@
 	background: #FFFFFF;
 	border-radius: 50%;
 	box-shadow: 
-		#ffffff 65px -25px 0 -5px, 
+		#ffffff 80px -25px 0 -5px, 
 		#ffffff 35px -25px, 
 		#ffffff 5px 0px 0 2px,
 		#ffffff 10px 0px 0 2px,
@@ -58,9 +58,11 @@
 		#ffffff 60px 0px 0 2px,
 		#ffffff 65px 0px 0 2px,
 		#ffffff 70px 0px 0 2px,
-		#ffffff 75px 0px 0 2px;
-	height: 50px;
-	width: 50px; 
+		#ffffff 75px 0px 0 2px,
+		#ffffff 80px 0px 0 2px,
+		#ffffff 85px 0px 0 2px;
+		height: 70px;
+		width: 80px;
 	position: absolute;
 	left: 40px;
     top: 80px;
@@ -71,8 +73,7 @@
 	background: #FFFFFF;
 	border-radius: 50%;
 	box-shadow: 
-		#ffffff 70px -14px 0 -5px,
-        #ffffff 50px -20px 0 2px,
+        #ffffff 65px -15px 0 2px,
         #ffffff 35px -14px 0 2px,
         #ffffff 25px -15px 0 2px,
 		#ffffff 5px 0px 0 2px,
@@ -89,9 +90,11 @@
 		#ffffff 60px 0px 0 2px,
 		#ffffff 65px 0px 0 2px,
 		#ffffff 70px 0px 0 2px,
-		#ffffff 75px 0px 0 2px;
-	height: 40px;
-	width: 40px; 
+		#ffffff 75px 0px 0 2px,
+		#ffffff 80px 0px 0 2px,
+		#ffffff 85px 0px 0 2px;
+	height: 50px;
+	width: 50px; 
     position: absolute;
     content: '';
 	left: 50px;
@@ -168,7 +171,7 @@
 	border-radius: 50%;
 	box-shadow: 
 		#CCCCCC 65px -25px 0 -5px, 
-		#CCCCCC 25px -25px, 
+		#CCCCCC 35px -25px, 
 		#CCCCCC 5px 0px 0 2px,
 		#CCCCCC 10px 0px 0 2px,
 		#CCCCCC 15px 0px 0 2px,
@@ -183,10 +186,12 @@
 		#CCCCCC 60px 0px 0 2px,
 		#CCCCCC 65px 0px 0 2px,
 		#CCCCCC 70px 0px 0 2px,
-		#CCCCCC 75px 0px 0 2px;
+		#CCCCCC 75px 0px 0 2px,
+		#CCCCCC 80px 0px 0 2px,
+		#CCCCCC 85px 0px 0 2px;
 	display: block;
-	height: 50px;
-	width: 50px;
+	height: 70px;
+	width: 80px;
 	position: absolute;
 	left: 40px;
 	top: 80px;
@@ -194,14 +199,17 @@
 
 .rain:before {
 	-webkit-animation: rain_rain .7s infinite linear;
+	position: absolute;
 	content: '';
+	top: 30px;
+	left: 15px;
 	background: transparent;
 	margin-left:0px;
 	border-radius: 50%;
 	display: block;
 	height: 12px;
 	width: 2px;
-	opacity: 0.3;
+	opacity: 0.5;
 	-webkit-transform: scale(.9);
 }
 @-webkit-keyframes rain {
@@ -304,9 +312,9 @@ $drop: rgb(21, 67, 153);
 /*Moon*/
 .moon {
     -webkit-animation: moon_star 5s ease-in-out infinite;
-  background-color: #fff;
-  border-radius: 50%;  
-  box-shadow:  
+	background-color: #fff;
+	border-radius: 50%;  
+	box-shadow:  
         #FFFFFF 26px 7px 0 -1px, 
         rgba(255,255,255,0.1) -36px -19px 0 -1px, 
         rgba(255,255,255,0.1) -51px -34px 0 -1px,
@@ -321,10 +329,10 @@ $drop: rgb(21, 67, 153);
         rgba(255,255,255,0.1) 60px -67px 0 -1px,  
         #FFFFFF 34px -127px,
         rgba(255,255,255,0.1) -26px -103px 0 -1px;
-  height: 4px;
-  width: 4px; 
-  opacity: 1;
-  position: absolute;
+	height: 4px;
+	width: 4px; 
+	opacity: 1;
+	position: absolute;
     left: 90px; 
     top: 155px;
 }
@@ -399,9 +407,11 @@ $drop: rgb(21, 67, 153);
 		#393939 60px 0px 0 2px,
 		#393939 65px 0px 0 2px,
 		#393939 70px 0px 0 2px,
-		#393939 75px 0px 0 2px;
-	height: 50px;  
-	width: 50px;  
+		#393939 75px 0px 0 2px,
+		#393939 80px 0px 0 2px,
+		#393939 85px 0px 0 2px;
+		height: 70px;
+		width: 80px;  
 	position: absolute;
 	left: 40px; 
 	top: 80px; 
@@ -439,7 +449,7 @@ $drop: rgb(21, 67, 153);
 	background: #FFFFFF; 
 	border-radius: 50%;
 	box-shadow: 
-		#ffffff 65px -25px 0 -5px, 
+		#ffffff 75px -25px 0 -5px, 
 		#ffffff 25px -25px, 
 		#ffffff 5px 0px 0 2px,
 		#ffffff 10px 0px 0 2px,
@@ -455,10 +465,12 @@ $drop: rgb(21, 67, 153);
 		#ffffff 60px 0px 0 2px,
 		#ffffff 65px 0px 0 2px,
 		#ffffff 70px 0px 0 2px,
-		#ffffff 75px 0px 0 2px;
+		#ffffff 75px 0px 0 2px,
+		#fff 80px 0 0 2px,
+		#fff 85px 0 0 2px;
 	display: block;
-	height: 50px;
-	width: 50px;
+	height: 70px;
+	width: 80px;
 	position: absolute;
 	left: 40px;
 	top: 80px;
