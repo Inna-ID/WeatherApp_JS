@@ -1,5 +1,5 @@
 @@include('html_parts/header.html')
-<div class="wrapper">
+<div class="wrapper day">
     <div class="main-content">
         <div class="titte-block">
             <h1 class="title">Weather Finder</h1>
@@ -10,8 +10,7 @@
             <form id="current-weather_form" action="">
                 <input class="search" id="city-name" type="text" placeholder="Enter the city" autocomplete="off">
             </form>
-            <div class="drop-down">
-            </div>
+            <div class="drop-down"></div>
         </div>
         <button id="btn_now" type="button">Now</button>
         <button id="btn_forecast_5" type="button">5 days</button>
@@ -21,18 +20,10 @@
                 @@include('html_parts/now.html')
                 @@include('html_parts/5days.html')
             </div>
+            <div class="error-container">
+                <p class="error-text"></p>
+            </div>
         </div>
-        <div class="error-container">
-            <p class="error-text"></p>
-        </div>
-
-        <div class="clouds-wrap">
-            <div class="broken-cloud"></div>
-            <div class="broken-cloud2"></div>
-        </div>
-        
-        <!-- sun -->
-        <!-- <div class="sun"></div> -->
     </div>
 </div>
 

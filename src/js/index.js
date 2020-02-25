@@ -17,6 +17,8 @@ const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
 //dom elems
 let successfulContainer = document.querySelector('.successful-container');
 let errorContainer = document.querySelector('.error-container');
+let forecastNowContainer = document.querySelector('.forecast_now');
+let forecast5DaysContainer = document.querySelector('.forecast_five-days');
 
 document.querySelector('#current-weather_form').addEventListener('submit', function(e) {
     e.preventDefault();
@@ -27,11 +29,25 @@ setZero = time => (
     time < 10 ? '0' + time : time
 )
 
-function hideAllChilds(parent) {
+// function hideAllChilds(parent) {
+//     errorContainer.style.display = 'none';
+//     for(let item of parent.children) {
+//         item.style.display = 'none'
+//     }
+// }
+
+function showSuccessfulLayout(elem) {
     errorContainer.style.display = 'none';
-    for(let item of parent.children) {
-        item.style.display = 'none'
+    for(let item of successfulContainer.children) {
+        item.style.display = 'none';
     }
+    elem.style.display = 'block';
+}
+
+function showErrorContainer(errorText) {
+    successfulContainer.style.display = 'none';
+    errorContainer.style.display = 'block';
+    document.querySelector('.error-text').innerText = errorText;
 }
 
 function setWidDerection(deg) {
@@ -49,19 +65,35 @@ function setWidDerection(deg) {
 }
 
 
+let weatherAnimationDiv = document.getElementById('weather-anim');
 function setWeatherConditionImg(wc) {
     switch(true) {
-        case (wc == 'clear sky') : return
-        case (wc == 'few clouds') : return
-        case (wc == 'scattered clouds') : return
-        case (wc == 'shower rain') : return
-        case (wc == 'rain') : return
-        case (wc == 'thunderstorm') : return
-        case (wc == 'snow') : return
-        case (wc == 'mist') : return
+        case (wc == 'Clear') : setWeatherAnimation('sunny'); break;
+        case (wc == 'Clouds') : setWeatherAnimation('cloudy'); break;
+        // case (wc == 'few clouds') : setWeatherAnimation('sunycloud'); break;
+        // case (wc == 'scattered clouds') :
+        // case (wc == 'overcast clouds') :
+        // case (wc == 'broken clouds') : setWeatherAnimation('cloudy'); break;
+        case (wc == 'Drizzle') :
+        case (wc == 'Rain') : setWeatherAnimation('rain'); break;
+        case (wc == 'Thunderstorm') : setWeatherAnimation('storm'); break;
+        case (wc == 'Snow') : setWeatherAnimation('snow'); break;
+        case (wc == 'Mist') : 
+        case (wc == 'Smoke') : 
+        case (wc == 'Haze') : 
+        case (wc == 'Dust') : 
+        case (wc == 'Fog') : 
+        case (wc == 'Sand') : 
+        case (wc == 'Squall') : 
+        case (wc == 'Tornado') : setWeatherAnimation('mist'); break;
     }
 }
 
+function setWeatherAnimation(wc) {
+    //weatherAnimationDiv.classList = '';
+    weatherAnimationDiv.className = '';
+    weatherAnimationDiv.className = wc
+}
 
 //////////// current weather ////////////
 
@@ -102,17 +134,18 @@ function loadCurrentWeatherByID(id) {
 
 
 function currentWeatherLoaded(data) {
-    //console.log(data);
+    console.log(data);
 
-    hideAllChilds(successfulContainer)
-    document.querySelector('.forecast_now').style.display = 'block';
+    //hideAllChilds(successfulContainer)
+    
+    showSuccessfulLayout(forecastNowContainer)
 
     const {name: city, 
         timezone,
         sys: {country, sunrise, sunset},
         main: {temp, feels_like, humidity, pressure},
         wind: {speed: windSpeed, deg: windDeg},
-        weather: {0:{description: cloudiness}} } = data;
+        weather: {0:{description: weatherDescription, main: weatherCondition}} } = data;
 
     //convert data obout sunrise and sunset in sec to ms
     let sunriseTime = new Date();
@@ -125,18 +158,17 @@ function currentWeatherLoaded(data) {
     successfulContainer.querySelector('.feels-like .value').innerText = `${feels_like.toFixed(1)}°C`;
     successfulContainer.querySelector('.humidity .value').innerText = `${humidity} %`;
     successfulContainer.querySelector('.pressure .value').innerText = `${pressure} hpa`;
-    successfulContainer.querySelector('.cloudiness .value').innerText = `${cloudiness}`;
+    successfulContainer.querySelector('.cloudiness .value').innerText = `${weatherDescription}`;
     successfulContainer.querySelector('.wind .value').innerText = `${windSpeed} m/s ${setWidDerection(windDeg)}`;
     successfulContainer.querySelector('.sunrise .value').innerText = `${setZero(sunriseTime.getHours())}:${setZero(sunriseTime.getMinutes())}`;
     successfulContainer.querySelector('.sunset .value').innerText = `${setZero(sunsetTime.getHours())}:${setZero(sunsetTime.getMinutes())}`;
+
+    setWeatherConditionImg(weatherCondition)
 }
 
 
 function errorHandler(jqXHR,statusStr,errorStr) {
-    hideAllChilds(successfulContainer);
-
-    errorContainer.style.display = 'block';
-    document.querySelector('.error-text').innerText = 'city not found';
+    showErrorContainer('city not found')
     console.log(statusStr+' '+errorStr);
 }
 
@@ -168,12 +200,10 @@ function loadForecast_5() {
 
 function forecast_5_Loaded(data) {
     //loaded temperature in kelvin
-    let forecast = data.list;
-    let container = document.querySelector('.forecast_five-days')
-    
-    hideAllChilds(successfulContainer)
-
-    container.style.display = 'block';
+    let forecast = data.list;  
+    //hideAllChilds(successfulContainer);
+    //container.style.display = 'block';
+    showSuccessfulLayout(forecast5DaysContainer)
 
     let day;
     forecast.forEach(function(item) {
@@ -205,7 +235,7 @@ function forecast_5_Loaded(data) {
             
             dayDiv.appendChild(dateDiv);
             dayDiv.appendChild(hoursDiv);
-            container.appendChild(dayDiv)
+            forecast5DaysContainer.appendChild(dayDiv)
         } else {
             let curDayDiv = document.querySelectorAll('.day');
             curDayDiv = curDayDiv[curDayDiv.length-1];

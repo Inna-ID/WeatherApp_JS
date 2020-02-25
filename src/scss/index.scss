@@ -11,7 +11,7 @@ $titleColor: #333;
 html, body {
     width: 100%;
     height: 100%;
-    min-height: 100%;
+    //min-height: 100%;
 }
 body {
     font-family: 'Nunito Sans', sans-serif;
@@ -27,14 +27,22 @@ input {
     width: 100%;
     height: 100%;
     min-height: 100%;
-    background: linear-gradient(to top, #283E51, #0A2342);
+    //background: linear-gradient(to top, #283E51, #0A2342);
+}
+.wrapper.day {
+    background: linear-gradient(to bottom, #4590d3, rgb(28, 124, 241));
+}
+.wrapper.night {
+    background: linear-gradient(to top, rgb(40, 62, 81), rgb(10, 35, 66));
 }
 
 .main-content {
     width: 800px;
     margin-left: auto;
     margin-right: auto;
+    position: relative;
 }
+
 
 .titte-block {
     margin-bottom: 5%;
@@ -114,9 +122,18 @@ button:hover:before {
     transition: all 0.75s ease-in-out;
 }
 
+.animation-block {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    width: 200px;
+    height: 200px;
+}
+
 
 .data-block {
     margin-top: 30px;
+    z-index: 2;
     .data {
         margin: 15px 0;        
         width: 33%;
@@ -126,9 +143,11 @@ button:hover:before {
     }
 
     .key {
+        color: #fff;
         opacity: .5;
     }
     .value {
+        color: #fff;
         font-size: 1.125em;
         opacity: 1;
     }
@@ -193,9 +212,10 @@ button:hover:before {
     display: none;
 }
 /////// 5 days forecast
-
-.day {
-    margin-bottom: 40px;
+.forecast_five-days {
+    .day {
+        margin-bottom: 40px;
+    }
     .date {
         font-size: 1.2em;
         font-weight: 600;
