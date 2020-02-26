@@ -164,6 +164,85 @@
 }
 
 
+/* moon with cloud*/
+.mooncloud {
+    -webkit-animation: moon_star 5s ease-in-out infinite;
+	background-color: #fff;
+	border-radius: 50%;  
+	box-shadow:  
+        #FFFFFF 26px 7px 0 -1px, 
+        rgba(255,255,255,0.1) -36px -19px 0 -1px, 
+        rgba(255,255,255,0.1) -51px -34px 0 -1px,
+        #FFFFFF -52px -62px 0 -1px, 
+        #FFFFFF 14px -37px, 
+        rgba(255,255,255,0.1) 41px -19px,  
+        #FFFFFF 34px -50px,
+        rgba(255,255,255,0.1) 14px -71px 0 -1px,
+        #FFFFFF 64px -21px 0 -1px, 
+        rgba(255,255,255,0.1) 32px -85px 0 -1px,
+        #FFFFFF 64px -90px,
+        rgba(255,255,255,0.1) 60px -67px 0 -1px,  
+        #FFFFFF 34px -127px,
+        rgba(255,255,255,0.1) -26px -103px 0 -1px;
+	height: 4px;
+	width: 4px; 
+	opacity: 1;
+	position: absolute;
+    left: 210px; 
+    top: 120px;
+    &:after {
+        webkit-animation: cloudy 9s ease-in-out infinite;
+	background: #FFFFFF;
+	border-radius: 50%;
+	box-shadow: 
+		#ffffff 65px -25px 0 -5px, 
+		#ffffff 35px -25px, 
+		#ffffff 5px 0px 0 2px,
+		#ffffff 10px 0px 0 2px,
+		#ffffff 15px 0px 0 2px,
+		#ffffff 20px 0px 0 2px,
+		#ffffff 25px 0px 0 2px, 
+		#ffffff 30px 0px 0 2px,
+		#ffffff 35px 0px 0 2px,
+		#ffffff 40px 0px 0 2px,
+		#ffffff 45px 0px 0 2px,
+		#ffffff 50px 0px 0 2px,
+		#ffffff 55px 0px 0 2px,
+		#ffffff 60px 0px 0 2px,
+		#ffffff 65px 0px 0 2px,
+		#ffffff 70px 0px 0 2px,
+		#ffffff 75px 0px 0 2px;
+	height: 50px;
+	width: 50px; 
+    position: absolute;
+    content: '';
+	left: -160px;
+    top: -10px;
+    opacity: 1;
+    z-index: 1;
+    }
+    &:before {
+		-webkit-animation: moonNight 9s ease-in-out infinite;
+		border-radius: 50%;
+		box-shadow: rgb(255, 255, 246) -35px 0;
+		content: '';
+		position: absolute;
+		height: 100px;
+		width: 100px;		
+		top: -80px;
+		right: -60px;
+		z-index: 0;
+		opacity: .9;
+		-webkit-transform: rotate(-25deg);
+		-webkit-transform-origin: 0 50%;
+    }
+}
+@-webkit-keyframes moonNight {
+	50% { -webkit-transform: rotate(-15deg); }
+  }
+
+
+
 /*Rain*/
 .rain {
 	-webkit-animation: rain 9s ease-in-out infinite 1s;
@@ -478,7 +557,10 @@ $drop: rgb(21, 67, 153);
 
 .snow:before {
 	-webkit-animation: snow_snow 2s infinite linear;
+	position: absolute;
 	content: '';
+	top: 30px;
+	left: 15px;
 	border-radius: 50%;
 	display: block;
 	height: 7px;

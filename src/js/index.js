@@ -9,6 +9,7 @@ let curentPlaceID = null;
 let userPosition = {};
 let requestedCity = {};
 let msPerMinutes = 60000;
+let isDayLight = true;
 const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
   "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
 ];
@@ -28,6 +29,22 @@ setZero = time => (
     time < 10 ? '0' + time : time
 )
 
+function setDayNightTheme(sunRiseMS, sunSetMS) {
+    let ms = new Date().getTime();
+    let wrapDiv = document.querySelector('.wrapper');
+    isDayLight = false
+
+    if(ms >= sunRiseMS && ms <= sunSetMS) {
+        wrapDiv.classList.remove('night');
+        wrapDiv.classList.add('day');
+        isDayLight = true;
+    } else {
+        wrapDiv.classList.remove('day');
+        wrapDiv.classList.add('night');
+        isDayLight = false;
+    }
+}
+
 
 function showSuccessfulLayout(elem) {
     errorContainer.style.display = 'none';
@@ -35,7 +52,6 @@ function showSuccessfulLayout(elem) {
         item.style.display = 'none';
     }
     elem.style.display = 'block';
-
 }
 
 function showErrorContainer(errorText) {
@@ -62,12 +78,9 @@ function setWidDerection(deg) {
 let weatherAnimationDiv = document.getElementById('weather-anim');
 function setWeatherConditionImg(wc) {
     switch(true) {
-        case (wc == 'Clear') : setWeatherAnimation('sunny'); break;
+        case (wc == 'Clear') : isDayLight ? setWeatherAnimation('sunny') : setWeatherAnimation('moon'); break;
         case (wc == 'Clouds') : setWeatherAnimation('cloudy'); break;
-        // case (wc == 'few clouds') : setWeatherAnimation('sunycloud'); break;
-        // case (wc == 'scattered clouds') :
-        // case (wc == 'overcast clouds') :
-        // case (wc == 'broken clouds') : setWeatherAnimation('cloudy'); break;
+        case (wc == 'few clouds') : isDayLight ? setWeatherAnimation('sunycloud') : setWeatherAnimation('mooncloud'); break;
         case (wc == 'Drizzle') :
         case (wc == 'Rain') : setWeatherAnimation('rain'); break;
         case (wc == 'Thunderstorm') : setWeatherAnimation('storm'); break;
@@ -84,16 +97,11 @@ function setWeatherConditionImg(wc) {
 }
 
 function setWeatherAnimation(wc) {
-    //weatherAnimationDiv.classList = '';
     weatherAnimationDiv.className = '';
     weatherAnimationDiv.className = wc
 }
 
 //////////// current weather ////////////
-
-// function setClosestCityToUserToSearchInput() {
-//     SEARCH_INPUT.value = userPosition.city;
-// }
 
 function fillSearchInputRequestedCity(city) {
     SEARCH_INPUT.value = city;
@@ -102,7 +110,7 @@ function fillSearchInputRequestedCity(city) {
 function getCity() {
     city = SEARCH_INPUT.value;
     if(!city) {
-        console.log('enter city name');
+        showErrorContainer('Enter city name')
         return;
     }
     loadCurrentWeather(city);
@@ -117,7 +125,7 @@ function loadCurrentWeather(city) {
 
 function loadCurrentWeatherByID(id) {
     if(!id) {
-        console.log('no user position id')
+        showErrorContainer('User coordinates not found');
         return;
     }
     fetch(`http://api.openweathermap.org/data/2.5/weather?id=${id}&appid=${APIKEY}&units=metric`, {method: 'GET'} )
@@ -129,7 +137,6 @@ function loadCurrentWeatherByID(id) {
 
 function currentWeatherLoaded(data) {
     console.log(data);
-    //hideAllChilds(successfulContainer)    
     showSuccessfulLayout(forecastNowContainer);
 
     const {name: city, 
@@ -155,12 +162,18 @@ function currentWeatherLoaded(data) {
     successfulContainer.querySelector('.sunrise .value').innerText = `${setZero(sunriseTime.getHours())}:${setZero(sunriseTime.getMinutes())}`;
     successfulContainer.querySelector('.sunset .value').innerText = `${setZero(sunsetTime.getHours())}:${setZero(sunsetTime.getMinutes())}`;
 
-    setWeatherConditionImg(weatherCondition)
+    setDayNightTheme(sunrise * 1000, sunset * 1000);
+
+    if(weatherDescription == 'few clouds') {
+        setWeatherConditionImg('few clouds'); 
+    } else {
+        setWeatherConditionImg(weatherCondition); 
+    }      
 }
 
 
 function errorHandler(jqXHR,statusStr,errorStr) {
-    showErrorContainer('city not found')
+    showErrorContainer('City not found');
     console.log(statusStr+' '+errorStr);
 }
 
@@ -174,14 +187,12 @@ BTN_FORECAST_NOW.addEventListener('click', function() {
 //////////// forecast for 5 days ////////////
 
 function loadForecast_5() {
-    let cityID;
-    if(requestedCity.id) {
-        cityID = requestedCity.id;
-    } else {
-        //cityID = '625144';
+    if(!requestedCity.id) {
+        showErrorContainer('City not found');
+        return;
     }
 
-    fetch(`http://api.openweathermap.org/data/2.5/forecast?id=${cityID}&appid=${APIKEY}`,
+    fetch(`http://api.openweathermap.org/data/2.5/forecast?id=${requestedCity.id}&appid=${APIKEY}`,
         {method: 'GET'}
     )
     .then(response => response.json())
@@ -193,12 +204,11 @@ function loadForecast_5() {
 function forecast_5_Loaded(data) {
     //loaded temperature in kelvin
     let forecast = data.list;  
-    //hideAllChilds(successfulContainer);
     showSuccessfulLayout(forecast5DaysContainer)
+
     forecast5DaysContainer.innerHTML = '';
     let day;
     forecast.forEach(function(item) {
-        //console.log(item.dt_txt)
         let date = new Date(item.dt * 1000 + (new Date().getTimezoneOffset() * msPerMinutes));
 
         if(day != date.getDate()) {
@@ -253,6 +263,7 @@ function forecast_5_Loaded(data) {
 BTN_FORECAST_5.addEventListener('click', function() {
     loadForecast_5();
 });
+
 
 
 //////// User geo location ////////
@@ -319,15 +330,15 @@ function findClosestToUserPlace() {
                 minDistance = distance;
                 userPosition.city = city.name;
                 userPosition.id = city.id;
-
+                userPosition.country = city.country;
                 // also set user position credentials for request city
                 requestedCity.id = city.id;
                 requestedCity.name = city.name;
             }
         }
 
-        fillSearchInputRequestedCity(userPosition.city)
-        loadCurrentWeatherByID(userPosition.id)       
+        fillSearchInputRequestedCity(`${userPosition.city}, ${userPosition.country}`);
+        loadCurrentWeatherByID(userPosition.id);
         console.log(userPosition)
     }
 }
@@ -340,10 +351,7 @@ findUserGEOLocation();
 
 ///////////////////  Auto Complete  /////////////////////
 
-let inpVal = '';
 function autoComplete(curSym) {
-    inpVal = SEARCH_INPUT.value;
-
     let request = new XMLHttpRequest();
     request.open('GET', cityListJSON);
     request.responseType = 'json';
@@ -351,13 +359,13 @@ function autoComplete(curSym) {
 
     request.onload = function() {
         let cityList = request.response;
-        let searchValue = SEARCH_INPUT.value;
+        let searchValue = SEARCH_INPUT.value.toLowerCase();
         let regExp = new RegExp(`^${searchValue}`);
 
         let fitCities = [];
         for(city of cityList) {
             
-            if(searchValue != SEARCH_INPUT.value) {
+            if(searchValue != SEARCH_INPUT.value.toLowerCase()) {
                 return;
             }
             if(regExp.test(city.name.toLowerCase())) {
@@ -381,10 +389,10 @@ function autoComplete(curSym) {
         // clear offered cities
         DROP_DOWN.innerHTML = '';
         
-        //the first 10 fitted and sorted cities        
-        for(let i=0; i<10; i++) {
-            fillDropDown(fitCities[i].id, fitCities[i].name, fitCities[i].country)
-        }
+        //the first 10 fitted and sorted cities
+        fitCities.slice(0, 10).forEach( (city) => {
+            fillDropDown(city.id, city.name, city.country)
+        })
     }
 }
 
