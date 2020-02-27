@@ -1,6 +1,7 @@
 const APIKEY = 'e1df1fc3a72e0ced10d2e8bac9563a73';
 const BTN_FORECAST_NOW = document.getElementById('btn_now');
 const BTN_FORECAST_5 = document.getElementById('btn_forecast_5');
+const BTN_FORECAST_TODAY = document.getElementById('btn_today_hourly');
 const SEARCH_INPUT = document.querySelector('#city-name');
 const DROP_DOWN = document.querySelector('.drop-down');
 const cityListJSON = '../city.list.json';
@@ -19,6 +20,7 @@ let successfulContainer = document.querySelector('.successful-container');
 let errorContainer = document.querySelector('.error-container');
 let forecastNowContainer = document.querySelector('.forecast_now');
 let forecast5DaysContainer = document.querySelector('.forecast_five-days');
+let forecastTodayContainer = document.querySelector('.forecast_today');
 
 document.querySelector('#current-weather_form').addEventListener('submit', function(e) {
     e.preventDefault();
@@ -136,7 +138,7 @@ function loadCurrentWeatherByID(id) {
 
 
 function currentWeatherLoaded(data) {
-    console.log(data);
+    //console.log(data);
     showSuccessfulLayout(forecastNowContainer);
 
     const {name: city, 
@@ -264,6 +266,52 @@ BTN_FORECAST_5.addEventListener('click', function() {
     loadForecast_5();
 });
 
+
+
+
+//////////// forecast today hourly ////////////
+
+function loadForecast_today() {
+    if(!requestedCity.id) {
+        showErrorContainer('City not found');
+        return;
+    }
+
+    fetch(`http://api.openweathermap.org/data/2.5/forecast?id=${requestedCity.id}&appid=${APIKEY}`,
+        {method: 'GET'}
+    )
+    .then(response => response.json())
+    .then(forecast_today_Loaded)
+    .catch(errorHandler);
+}
+
+function forecast_today_Loaded(data) {
+    console.log(data)
+    //loaded temperature in kelvin
+    let forecast = data.list;
+    //находить сегодняшнюю погоду и на 00 для завтра
+    showSuccessfulLayout(forecastTodayContainer)
+    
+    forecastTodayContainer.innerHTML = '';
+
+    let today = new Date().getDate();
+    forecast.forEach(function(item) {
+        let date = new Date(item.dt * 1000 + (new Date().getTimezoneOffset() * msPerMinutes));
+
+        if(today != date.getDate()) {
+           return
+        }
+        console.log(item)
+    })
+}
+
+BTN_FORECAST_TODAY.addEventListener('click', function() {
+    loadForecast_today();
+});
+
+function errorHandler() {
+    console.log('errrr')
+}
 
 
 //////// User geo location ////////
