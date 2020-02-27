@@ -14,6 +14,9 @@ let isDayLight = true;
 const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
   "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
 ];
+//['Sun','Mon','Tues','Wed','Thur','Fr','Sat']
+const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
 
 //dom elems
 let successfulContainer = document.querySelector('.successful-container');
@@ -76,17 +79,16 @@ function setWidDerection(deg) {
     }
 }
 
-
-let weatherAnimationDiv = document.getElementById('weather-anim');
-function setWeatherConditionImg(wc) {
+let weatherAnimationDiv = document.querySelector('#weather-anim');
+function setWeatherConditionImg(wc, container) {
     switch(true) {
-        case (wc == 'Clear') : isDayLight ? setWeatherAnimation('sunny') : setWeatherAnimation('moon'); break;
-        case (wc == 'Clouds') : setWeatherAnimation('cloudy'); break;
-        case (wc == 'few clouds') : isDayLight ? setWeatherAnimation('sunycloud') : setWeatherAnimation('mooncloud'); break;
+        case (wc == 'Clear') : isDayLight ? setWeatherAnimation('sunny', container) : setWeatherAnimation('moon', container); break;
+        case (wc == 'Clouds') : setWeatherAnimation('cloudy', container); break;
+        case (wc == 'few clouds') : isDayLight ? setWeatherAnimation('sunycloud', container) : setWeatherAnimation('mooncloud', container); break;
         case (wc == 'Drizzle') :
-        case (wc == 'Rain') : setWeatherAnimation('rain'); break;
-        case (wc == 'Thunderstorm') : setWeatherAnimation('storm'); break;
-        case (wc == 'Snow') : setWeatherAnimation('snow'); break;
+        case (wc == 'Rain') : setWeatherAnimation('rain'. container); break;
+        case (wc == 'Thunderstorm') : setWeatherAnimation('storm', container); break;
+        case (wc == 'Snow') : setWeatherAnimation('snow', container); break;
         case (wc == 'Mist') : 
         case (wc == 'Smoke') : 
         case (wc == 'Haze') : 
@@ -94,13 +96,13 @@ function setWeatherConditionImg(wc) {
         case (wc == 'Fog') : 
         case (wc == 'Sand') : 
         case (wc == 'Squall') : 
-        case (wc == 'Tornado') : setWeatherAnimation('mist'); break;
+        case (wc == 'Tornado') : setWeatherAnimation('mist', container); break;
     }
 }
 
-function setWeatherAnimation(wc) {
-    weatherAnimationDiv.className = '';
-    weatherAnimationDiv.className = wc
+function setWeatherAnimation(wc, container) {
+    container.className = '';
+    container.className = wc
 }
 
 //////////// current weather ////////////
@@ -167,9 +169,9 @@ function currentWeatherLoaded(data) {
     setDayNightTheme(sunrise * 1000, sunset * 1000);
 
     if(weatherDescription == 'few clouds') {
-        setWeatherConditionImg('few clouds'); 
+        setWeatherConditionImg('few clouds', weatherAnimationDiv); 
     } else {
-        setWeatherConditionImg(weatherCondition); 
+        setWeatherConditionImg(weatherCondition, weatherAnimationDiv); 
     }      
 }
 
@@ -219,7 +221,7 @@ function forecast_5_Loaded(data) {
             dayDiv.className = 'day';
             let dateDiv = document.createElement('p');
             dateDiv.className = 'date';
-            dateDiv.innerText = `${date.getDate()} ${monthNames[date.getMonth()]}`;
+            dateDiv.innerText = `${dayNames[date.getDay()]}, ${date.getDate()} ${monthNames[date.getMonth()]}`;
             let hoursDiv = document.createElement('div');
             hoursDiv.className = 'hours';
             let hourDiv = document.createElement('div');
@@ -240,7 +242,7 @@ function forecast_5_Loaded(data) {
             dayDiv.appendChild(hoursDiv);
             forecast5DaysContainer.appendChild(dayDiv)
         } else {
-            let curDayDiv = document.querySelectorAll('.day');
+            let curDayDiv = document.querySelectorAll('.forecast_five-days .day');
             curDayDiv = curDayDiv[curDayDiv.length-1];
             let curHoursDiv = curDayDiv.querySelector('.hours');
             //console.log(curHoursDiv)
@@ -289,20 +291,81 @@ function forecast_today_Loaded(data) {
     console.log(data)
     //loaded temperature in kelvin
     let forecast = data.list;
-    //находить сегодняшнюю погоду и на 00 для завтра
-    showSuccessfulLayout(forecastTodayContainer)
-    
+    showSuccessfulLayout(forecastTodayContainer)    
     forecastTodayContainer.innerHTML = '';
 
-    let today = new Date().getDate();
+    let todayDate = new Date();
+    let todayDay = todayDate.getDate();
+
+    let dayDiv = document.createElement('div');
+    dayDiv.className = 'day';
+    let dateDiv = document.createElement('p');
+    dateDiv.className = 'date';
+    dateDiv.innerText = `${dayNames[todayDate.getDay()]}, ${todayDay} ${monthNames[todayDate.getMonth()]}`;
+    let hoursDiv = document.createElement('div');
+    hoursDiv.className = 'hours';
+
     forecast.forEach(function(item) {
         let date = new Date(item.dt * 1000 + (new Date().getTimezoneOffset() * msPerMinutes));
+        if(todayDay == date.getDate() || (date.getDate() == todayDay+1 && date.getHours() == 0) ) {
 
-        if(today != date.getDate()) {
-           return
+            let hourDiv = document.createElement('div');
+            hourDiv.className = 'hour';
+            let timeDiv = document.createElement('p');
+            timeDiv.className = 'time';
+            timeDiv.innerText = `${setZero(date.getHours())}:${setZero(date.getMinutes())}`;
+
+            let tempDiv = document.createElement('p');
+            tempDiv.className = 'temperature';
+            tempDiv.innerText =  `${Math.round(item.main.temp -273.15)}°C`;
+            let windDiv = document.createElement('p');
+            windDiv.className = 'wind';
+            windDiv.innerText = `${Math.round(item.wind.speed)} m/s ${setWidDerection(item.wind.deg)}`;
+
+            let conditionDiv = document.createElement('p');
+            conditionDiv.className = 'weather_cond';
+            conditionDiv.innerText = `${item.weather[0].description}`;
+
+
+            // let iconBlock = document.createElement('div');
+            // iconBlock.className = 'icon-block';
+            // let weatherIcon = document.createElement('div');
+            
+            // iconBlock.appendChild(weatherIcon);
+            // if(item.weather[0].description == 'few clouds') {
+            //     setWeatherConditionImg('few clouds', weatherIcon); 
+            // } else {
+            //     setWeatherConditionImg(item.weather[0].description, weatherIcon); 
+            // }
+            // weatherIcon.classList.add('icon');
+
+            hourDiv.appendChild(timeDiv)
+            hourDiv.appendChild(tempDiv);
+            hourDiv.appendChild(windDiv);
+            hourDiv.appendChild(conditionDiv);
+            //hourDiv.appendChild(iconBlock);
+            hoursDiv.appendChild(hourDiv);            
+            dayDiv.appendChild(dateDiv);
+
+ 
+        } else {
+            return;
         }
-        console.log(item)
+        dayDiv.appendChild(hoursDiv);
+        forecastTodayContainer.appendChild(dayDiv)
+
+
     })
+
+    // weatherAnimList.forEach(function(item) {
+    //     if(item == 'few clouds') {
+    //         setWeatherConditionImg('few clouds'); 
+    //     } else {
+    //         setWeatherConditionImg(item); 
+    //     }
+    // })
+
+
 }
 
 BTN_FORECAST_TODAY.addEventListener('click', function() {
