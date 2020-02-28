@@ -26,7 +26,7 @@
 
 @-webkit-keyframes sunny {
 	50% { 
-		-webkit-transform: translateY(-6px);
+		-webkit-transform: translateY(-8px);
 	}
 }
 @-webkit-keyframes sunglow {
@@ -103,7 +103,7 @@
 }
 
 @-webkit-keyframes cloudy {
-	50% { -webkit-transform: translateY(-6px); }
+	50% { -webkit-transform: translateY(-8px); }
 }
 
 /* few cloud or sanny cloud*/
@@ -292,7 +292,7 @@
 	-webkit-transform: scale(.9);
 }
 @-webkit-keyframes rain {
-	50% { -webkit-transform: translateY(-6px); }
+	50% { -webkit-transform: translateY(-8px); }
 }
 
 $drop: rgb(21, 67, 153);
@@ -437,7 +437,7 @@ $drop: rgb(21, 67, 153);
   position: absolute;
   top: -106px; 
   left:-30px;
-  -webkit-transform: rotate(-5deg);
+  -webkit-transform: rotate(-8deg);
   -webkit-transform-origin: 30px 50%;
 }
 
@@ -512,7 +512,7 @@ $drop: rgb(21, 67, 153);
 	-webkit-transform-origin: 50% -60px;
 }
 @-webkit-keyframes storm {
-	50% { -webkit-transform: translateY(-5px); } 
+	50% { -webkit-transform: translateY(-8px); } 
 }  
 
 @-webkit-keyframes storm_thunder {
@@ -569,7 +569,7 @@ $drop: rgb(21, 67, 153);
 	-webkit-transform: scale(.9);
 }
 @-webkit-keyframes snow {
-	50% { -webkit-transform: translateY(-5px); }
+	50% { -webkit-transform: translateY(-8px); }
 }
 
 @-webkit-keyframes snow_snow {
@@ -758,19 +758,15 @@ $drop: rgb(21, 67, 153);
 	}
 	50%{
 		-webkit-transform: translateX(0px);
-		
 	}
 
 	100% {
 		-webkit-transform: translateX(10px);
-	
 	}
 }
 @-webkit-keyframes mistafter {
 	0% {
 		-webkit-transform: translateX(10px);
-	
-		
 	}
 	50%{
 		-webkit-transform: translateX(0px);
@@ -792,7 +788,6 @@ $drop: rgb(21, 67, 153);
 		#CCCCCC -65px 0px 0 2px,
 		white -70px -30px 0 2px,
 		#CCCCCC -75px 0px 0 2px;
-		
 	}
 
 	100% {
@@ -811,7 +806,28 @@ $drop: rgb(21, 67, 153);
 	.sunny {
 		background: url('../img/icon_sun.png') no-repeat;
 	}
+	.moon {
+		background: url('../img/icon_moon.png') no-repeat;
+	}
 	.cloudy {
+		background: url('../img/icon_clouds.png') no-repeat;
+	}
+	.sunycloud {
+		background: url('../img/icon_sun_cloud.png') no-repeat;
+	}
+	.mooncloud {
+		background: url('../img/icon_moon_cloud.png') no-repeat;
+	}
+	.rain {
+		background: url('../img/icon_rain.png') no-repeat;
+	}
+	.storm {
+		background: url('../img/icon_storm.png') no-repeat;
+	}
+	.snow {
+		background: url('../img/icon_snow.png') no-repeat;
+	}
+	.mist {
 		background: url('../img/icon_clouds.png') no-repeat;
 	}
 }

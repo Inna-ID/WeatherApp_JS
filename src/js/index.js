@@ -86,7 +86,7 @@ function setWeatherConditionImg(wc, container) {
         case (wc == 'Clouds') : setWeatherAnimation('cloudy', container); break;
         case (wc == 'few clouds') : isDayLight ? setWeatherAnimation('sunycloud', container) : setWeatherAnimation('mooncloud', container); break;
         case (wc == 'Drizzle') :
-        case (wc == 'Rain') : setWeatherAnimation('rain'. container); break;
+        case (wc == 'Rain') : setWeatherAnimation('rain', container); break;
         case (wc == 'Thunderstorm') : setWeatherAnimation('storm', container); break;
         case (wc == 'Snow') : setWeatherAnimation('snow', container); break;
         case (wc == 'Mist') : 
@@ -139,8 +139,14 @@ function loadCurrentWeatherByID(id) {
 }
 
 
+function convertToTimeZone(timezone) {
+    let localTimeZoneMS = (new Date().getTimezoneOffset() * msPerMinutes) * -1;
+    let diffrence = localTimeZoneMS - (timezone * 1000);
+    return diffrence;
+}
+
 function currentWeatherLoaded(data) {
-    //console.log(data);
+    console.log(data);
     showSuccessfulLayout(forecastNowContainer);
 
     const {name: city, 
@@ -150,11 +156,16 @@ function currentWeatherLoaded(data) {
         wind: {speed: windSpeed, deg: windDeg},
         weather: {0:{description: weatherDescription, main: weatherCondition}} } = data;
 
-    //convert data obout sunrise and sunset in sec to ms
+    
+    console.log(convertToTimeZone(timezone))
+    var sunriseByUserTimezone = (sunrise * 1000) - convertToTimeZone(timezone);
+    var sunsetByUserTimezone = (sunset * 1000) - convertToTimeZone(timezone);
+
+    //convert data about sunrise and sunset in sec to ms
     let sunriseTime = new Date();
     let sunsetTime = new Date();
-    sunriseTime.setTime(sunrise * 1000);
-    sunsetTime.setTime(sunset * 1000);  
+    sunriseTime.setTime(sunriseByUserTimezone);
+    sunsetTime.setTime(sunsetByUserTimezone);  
     
     successfulContainer.querySelector('.location .value').innerText = `${city}, ${country}`;
     successfulContainer.querySelector('.temperature .value').innerText = `${temp.toFixed(1)}°C`;
@@ -329,8 +340,6 @@ function forecast_today_Loaded(data) {
             iconBlockDiv.appendChild(iconDiv);
 
 
-
-
             hourDiv.appendChild(timeDiv)
             hourDiv.appendChild(iconBlockDiv)
             hourDiv.appendChild(tempDiv);
@@ -359,8 +368,9 @@ BTN_FORECAST_TODAY.addEventListener('click', function() {
     loadForecast_today();
 });
 
-function errorHandler() {
-    console.log('errrr')
+function errorHandler(jqXHR,statusStr,errorStr) {
+    showErrorContainer('no data');
+    console.log(statusStr+' '+errorStr);
 }
 
 

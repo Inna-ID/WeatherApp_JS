@@ -13,14 +13,14 @@
             <div class="drop-down"></div>
         </div>
         <button id="btn_now" class="w_switcher" type="button">Now</button>
-        <button id="btn_forecast_5" class="w_switcher" type="button">5 days</button>
         <button id="btn_today_hourly" class="w_switcher" type="button">Today</button>
+        <button id="btn_forecast_5" class="w_switcher" type="button">5 days</button>
 
         <div class="data-block">
             <div class="successful-container">
                 @@include('html_parts/now.html')
-                @@include('html_parts/5days.html')
                 @@include('html_parts/today.html')
+                @@include('html_parts/5days.html')                
             </div>
             <div class="error-container">
                 <p class="error-text"></p>
