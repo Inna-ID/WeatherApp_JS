@@ -322,31 +322,28 @@ function forecast_today_Loaded(data) {
             windDiv.className = 'wind';
             windDiv.innerText = `${Math.round(item.wind.speed)} m/s ${setWidDerection(item.wind.deg)}`;
 
-            let conditionDiv = document.createElement('p');
-            conditionDiv.className = 'weather_cond';
-            conditionDiv.innerText = `${item.weather[0].description}`;
+            let iconBlockDiv = document.createElement('div');
+            iconBlockDiv.className = 'weather-icon_block';
+            let iconDiv = document.createElement('div');
+            //conditionDiv.innerText = `${item.weather[0].description}`;
+            iconBlockDiv.appendChild(iconDiv);
 
 
-            // let iconBlock = document.createElement('div');
-            // iconBlock.className = 'icon-block';
-            // let weatherIcon = document.createElement('div');
-            
-            // iconBlock.appendChild(weatherIcon);
-            // if(item.weather[0].description == 'few clouds') {
-            //     setWeatherConditionImg('few clouds', weatherIcon); 
-            // } else {
-            //     setWeatherConditionImg(item.weather[0].description, weatherIcon); 
-            // }
-            // weatherIcon.classList.add('icon');
+
 
             hourDiv.appendChild(timeDiv)
+            hourDiv.appendChild(iconBlockDiv)
             hourDiv.appendChild(tempDiv);
             hourDiv.appendChild(windDiv);
-            hourDiv.appendChild(conditionDiv);
-            //hourDiv.appendChild(iconBlock);
+            
             hoursDiv.appendChild(hourDiv);            
             dayDiv.appendChild(dateDiv);
 
+            if(item.weather[0].description == 'few clouds') {
+                setWeatherConditionImg('few clouds', iconDiv); 
+            } else {
+                setWeatherConditionImg(item.weather[0].main, iconDiv); 
+            }
  
         } else {
             return;
@@ -356,16 +353,6 @@ function forecast_today_Loaded(data) {
 
 
     })
-
-    // weatherAnimList.forEach(function(item) {
-    //     if(item == 'few clouds') {
-    //         setWeatherConditionImg('few clouds'); 
-    //     } else {
-    //         setWeatherConditionImg(item); 
-    //     }
-    // })
-
-
 }
 
 BTN_FORECAST_TODAY.addEventListener('click', function() {

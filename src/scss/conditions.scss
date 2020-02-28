@@ -1,5 +1,5 @@
 /* sunny */
-.sunny { 
+.animation-block .sunny { 
 	-webkit-animation: sunny 9s linear infinite;
 	background: #ffe400; 
 	border-radius: 100%; 
@@ -11,7 +11,7 @@
 	left: 60px; 
 	top: 60px;
 }
-.sunny:before{
+.animation-block .sunny:before{
 	-webkit-animation: sunglow 9s ease-in-out infinite;
     background: #FFEE44; 
     box-shadow: rgba(255,255,0,1) 0 0 5px 1px;
@@ -37,7 +37,7 @@
 
 
 /* CLOUDY */
-.cloudy {
+.animation-block .cloudy {
 	-webkit-animation: cloudy 9s ease-in-out infinite;
 	background: #FFFFFF;
 	border-radius: 50%;
@@ -68,7 +68,7 @@
     top: 80px;
     opacity: .95;
 }
-.cloudy:after {
+.animation-block .cloudy:after {
 	-webkit-animation: cloudy 9s ease-in-out infinite;
 	background: #FFFFFF;
 	border-radius: 50%;
@@ -107,7 +107,7 @@
 }
 
 /* few cloud or sanny cloud*/
-.sunycloud {
+.animation-block .sunycloud {
     -webkit-animation: sunny 9s linear infinite;
 	background: #ffe400; 
 	border-radius: 100%; 
@@ -165,7 +165,7 @@
 
 
 /* moon with cloud*/
-.mooncloud {
+.animation-block .mooncloud {
     -webkit-animation: moon_star 5s ease-in-out infinite;
 	background-color: #fff;
 	border-radius: 50%;  
@@ -244,7 +244,7 @@
 
 
 /*Rain*/
-.rain {
+.animation-block .rain {
 	-webkit-animation: rain 9s ease-in-out infinite 1s;
 	background: #CCCCCC; 
 	border-radius: 50%;
@@ -276,7 +276,7 @@
 	top: 80px;
 }
 
-.rain:before {
+.animation-block .rain:before {
 	-webkit-animation: rain_rain .7s infinite linear;
 	position: absolute;
 	content: '';
@@ -389,7 +389,7 @@ $drop: rgb(21, 67, 153);
 }
 
 /*Moon*/
-.moon {
+.animation-block .moon {
     -webkit-animation: moon_star 5s ease-in-out infinite;
 	background-color: #fff;
 	border-radius: 50%;  
@@ -415,7 +415,7 @@ $drop: rgb(21, 67, 153);
     left: 90px; 
     top: 155px;
 }
-.moon:before{ 
+.animation-block .moon:before{ 
   -webkit-animation: moon 9s ease-in-out infinite;
   border-radius: 50%;
   box-shadow: rgb(255, 255, 246) -35px 0;
@@ -427,7 +427,7 @@ $drop: rgb(21, 67, 153);
   -webkit-transform: rotate(-5deg);
   -webkit-transform-origin: 0 50%;
 }
-.moon:after {
+.animation-block .moon:after {
   -webkit-animation: moon 9s ease-in-out infinite;
   border-radius: 50%;
   box-shadow: rgba(0,0,0,0.2) -5px 0 0;
@@ -465,7 +465,7 @@ $drop: rgb(21, 67, 153);
 }
 
 /* storm */
-.storm {
+.animation-block .storm {
 	-webkit-animation: storm 9s ease-in-out infinite;
 	background: #393939;
 	border-radius: 50%;
@@ -496,7 +496,7 @@ $drop: rgb(21, 67, 153);
 	top: 80px; 
 }
 
-.storm:before {
+.animation-block .storm:before {
 	-webkit-animation: storm_thunder 3s steps(1, end) infinite; 
     border-right: 7px solid transparent;
 	border-top: 33px solid yellow; 
@@ -523,7 +523,7 @@ $drop: rgb(21, 67, 153);
 }
 
 /* snow */
-.snow {
+.animation-block .snow {
 	-webkit-animation: snow 9s ease-in-out infinite 1s;
 	background: #FFFFFF; 
 	border-radius: 50%;
@@ -555,7 +555,7 @@ $drop: rgb(21, 67, 153);
 	top: 80px;
 }
 
-.snow:before {
+.animation-block .snow:before {
 	-webkit-animation: snow_snow 2s infinite linear;
 	position: absolute;
 	content: '';
@@ -664,7 +664,7 @@ $drop: rgb(21, 67, 153);
 }
 
 
-.mist{
+.animation-block .mist{
 	position: absolute;
 	-webkit-animation: mist 10s infinite alternate ease-in-out;
 	background: transparent; 
@@ -682,7 +682,7 @@ $drop: rgb(21, 67, 153);
 		-webkit-filter:blur(25px);
 		
 }
-.mist:before{
+.animation-block .mist:before{
  -webkit-animation: mistbefore 9s infinite alternate ease-in-out;
 	 background: black; 
     border-radius: 10px; 
@@ -695,7 +695,7 @@ $drop: rgb(21, 67, 153);
 
 
 }
-.mist:after{
+.animation-block .mist:after{
  -webkit-animation: mistafter 12s infinite alternate ease-in-out;
 	 background: white; 
     border-radius: 10px; 
@@ -797,5 +797,21 @@ $drop: rgb(21, 67, 153);
 
 	100% {
 		-webkit-transform: translateX(10px);
+	}
+}
+
+
+.weather-icon_block {
+	width: 40px;
+	height: 40px;
+	margin: 10px 0;	
+	div {
+		height: 100%;
+	}
+	.sunny {
+		background: url('../img/icon_sun.png') no-repeat;
+	}
+	.cloudy {
+		background: url('../img/icon_clouds.png') no-repeat;
 	}
 }
